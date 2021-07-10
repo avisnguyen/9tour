@@ -1,0 +1,164 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-web :: web_head}"></head>
+<body class="changeHeader">
+</div>
+<div class="modal fade modal-login modal-border-transparent" id="loginModal" tabindex="-1" role="dialog"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="btn btn-close close" data-dismiss="modal" aria-label="Close">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+            <div class="clear"></div>
+            <div id="modal-login-form-wrapper">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <section class="pageTitle"
+             style="background-image:url(https://res.cloudinary.com/jstit/image/upload/v1621071743/9tour/background/Cu-Lao-Xanh-island-Qui-Nhon_685023343_byn2pw.jpg);">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="titleTable">
+                        <div class="titleTableInner">
+                            <div class="pageTitleInfo">
+                                <h1>Blog</h1>
+                                <div class="under-border"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHITE SECTION FILTER-->
+    <section class="mainContentSection">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="media blogPostListItem" style="overflow: hidden">
+                        <div class="media-body">
+                            <p> Danh sách bài viết</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row marginExten">
+                <div class="container">
+                    <div class="row marginExten">
+                        <div class="col-md-3 col-sm-12 col-xs-12">
+                            <div class="profile-sider">
+                                <div class="profile-usermenu">
+                                    <style>
+                                        .nav .active {
+                                            background-color: #D0D0D0;
+                                            color: #1e94f2;
+                                            border-left: 2px solid;
+                                        }
+
+                                        .profile-sidebar .nav > li:hover {
+                                            background-color: #D0D0D0;
+                                            color: #1e94f2;
+                                            border-left: 2px solid;
+                                        }
+
+                                        .profile-sidebar .nav > li a:hover {
+                                            color: #1e94f2;
+                                        }
+                                    </style>
+                                    <ul class="nav infor-user" style="background: #f6f6f3;">
+                                        <li class="active">
+                                            <a th:href="@{/blog}">
+                                                <i style="color:#6f6f6f; font-size: 12px;"></i>
+                                                &nbsp;Tất cả bài viết
+                                            </a>
+                                        </li>
+                                        <th:block th:each="category: ${categories.results}">
+                                            <li class="">
+                                                <a th:href="@{/blog/category/{catId}/{catCode}(catId = ${category.id}, catCode = ${category.code})}">
+                                                    <i style="color:#6f6f6f; font-size: 12px;"></i>
+                                                    &nbsp;[[${category.name}]]
+                                                </a>
+                                            </li>
+                                        </th:block>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9 col-sm-12 col-xs-12">
+                            <th:block th:each="post, state: ${posts.results}" th:if="${state.count < 7}">
+                                <div class="col-sm-4 col-xs-6">
+                                    <div class="thumbnail citiesContent country-destination">
+                                        <div class="caption">
+                                            <div class="media item-destination">
+                                                <a th:href="@{/blog/{id}/{slug}(id = ${post.id}, slug = ${post.slug})}"
+                                                   class="media-left image-box-relative image-box-3x2 image-box-center"
+                                                   style="padding-right: 0 !important;">
+                                                    <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                                         class="media-object" th:src="${post.thumbnailUrl}"
+                                                         style="border-radius: 3px;" alt="Image">
+                                                </a>
+                                                <div class="media-body info-destination">
+                                                    <a th:href="@{/blog/{id}/{slug}(id = ${post.id}, slug = ${post.slug})}"
+                                                       class="media-heading title-destination"
+                                                       th:text="${post.title}"></a>
+                                                    <p class="content-destination" th:text="${post.shortDescription}">
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="paginationCenter">
+                                        <ul class="pagination" id="pagination"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form th:action='@{/blog/}' id="pagingForm" method="get">
+                    <input type="hidden" th:value="${posts.getPage()}" id="page" name="page">
+                    <input type="hidden" th:value="${posts.getLimit()}" id="limit" name="limit">
+                    <th:block th:if="${posts.getSortBy()}">
+                        <input type="hidden" th:value="${posts.getSortBy()}" id="sortBy" name="sortBy">
+                    </th:block>
+                    <th:block th:if="${posts.getIsDesc()}">
+                        <input type="hidden" th:value="${posts.getIsDesc()}" id="desc" name="desc">
+                    </th:block>
+                </form>
+            </div>
+        </div>
+    </section>
+    <footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<script>
+    var currentPage = [[${posts.page}]];
+    var limit = [[${posts.limit}]]
+    var totalPage = [[${posts.totalPages}]];
+    $(function () {
+        window.pagObj = $('#pagination').twbsPagination({
+            totalPages: totalPage,
+            visiblePages: 5,
+            startPage: currentPage,
+            onPageClick: function (event, page) {
+                if (currentPage != page) {
+                    $('#limit').val(limit);
+                    $('#page').val(page);
+                    $('#pagingForm').submit();
+                }
+            }
+        })
+    });
+</script>
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-web :: web_head}"></head>
+<body class="changeHeader">
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <div class="member-wrapper">
+        <div class="background"></div>
+        <div class="member-content">
+            <div class="login clearfix">
+                <h4 class="text-center title">Đăng Nhập</h4>
+                <!--                <div class="alert alert-success" th:if="${param.registerSuccess != null}">-->
+                <!--                    <button type="button" class="close" data-dismiss="alert">-->
+                <!--                        <i class="ace-icon fa fa-times"></i>-->
+                <!--                    </button>-->
+                <!--                    <b>Đăng ký tài khoản thành công</b>-->
+                <!--                </div>-->
+                <th:block th:if="${param.message != null}">
+                    <div th:class="|alert ${message.get('alert')}|" th:if="${message != null}">
+                        <button type="button" class="close" data-dismiss="alert">
+                            <i class="ace-icon fa fa-times"></i>
+                        </button>
+                        <b th:text="${message.get('msg')}"></b>
+                    </div>
+                </th:block>
+                <!--                <div class="alert alert-success" th:if="${param.resetSuccess != null}">-->
+                <!--                    <button type="button" class="close" data-dismiss="alert">-->
+                <!--                        <i class="ace-icon fa fa-times"></i>-->
+                <!--                    </button>-->
+                <!--                    <b>Mật khẩu đã được cập nhật thành công</b>-->
+                <!--                </div>-->
+                <div class="col-md-12 col-xs-12">
+                    <form action="j_spring_security_check" method="post" id="formLogin" novalidate
+                          class="has-validation-callback">
+                        <div class="form-content">
+                            <div class="form-group label-top">
+                                <input class="label-top" type="email" name="j_email" id="email" required="required"
+                                       data-validation="required email" oninput="checkNull()">
+                                <label for="email">Địa chỉ email</label>
+                            </div>
+                            <div class="form-group label-top">
+                                <input id="password" class="label-top" type="password" name="j_password"
+                                       required="required" data-validation="required" oninput="checkNull()">
+                                <label for="password">Mật khẩu</label>
+                                <!--                                <span class="error"></span>-->
+                            </div>
+                            <div class="form-group">
+                                <div class="row gap-5">
+                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="checkbox-block font-icon-checkbox">
+                                            <input name="remember-me" class="checkbox" type="checkbox" id="remember-me">
+                                            <label class="" for="remember-me">Ghi nhớ</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                                        <a type="button" th:href="@{/quen-mat-khau}" class="btn btn-link">Quên mật
+                                            khẩu?</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-footer">
+                            <div class="row gap-10">
+                                <div class="col-xs-6 col-sm-6 mbot-10">
+                                    <button type="submit" class="btn btn-primary btn-block submit" id="button_login"
+                                            disabled>Đăng Nhập
+                                    </button>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 mbot-10">
+                                    <a type="submit" class="btn btn-danger btn-block"
+                                       th:href="@{/trang-chu}" data-dismiss="modal">Hủy
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="text-left">
+                                Chưa có tài khoản?
+                                <a type="button" th:href="@{/dang-ky}" class="btn btn-link">Đăng Ký</a>
+                            </div>
+                        </div>
+                    </form>
+                    <script type="text/javascript">
+                        document.getElementById('button_login').onclick = ev => {
+                            ev.preventDefault();
+                            var i = document.getElementsByClassName("help-block error");
+                            if (i.length === 0)
+                                document.getElementById('formLogin').submit();
+                        }
+                        $.validate({
+                            modules: 'html5',
+                            errorMessageClass: 'error',
+                            lang: 'vi'
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+<script>
+    var checkNull = function () {
+        if (document.getElementById('email').value == "" || document.getElementById('password').value == "") {
+            document.getElementById("button_login").disabled = true;
+        } else {
+            document.getElementById("button_login").disabled = false;
+        }
+    }
+</script>
+</body>
+</html>

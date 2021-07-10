@@ -1,0 +1,389 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-admin :: admin_head}"></head>
+<body class="no-skin">
+<div th:replace="~{fragments/fragments-admin :: admin_header}"></div>
+<div class="main-container">
+    <div th:replace="~{fragments/fragments-admin :: admin_menu}"></div>
+    <div class="main-content">
+
+        <div class="main-content-inner">
+            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                <ul class="breadcrumb">
+                    <li><i class="ace-icon fa fa-home home-icon"></i>
+                        <a th:href="@{/admin}">Trang chủ</a></li>
+                    <li class="active">Vé</li>
+                </ul>
+                <!-- /.breadcrumb -->
+            </div>
+            <div class="page-content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div th:if="${message}" th:class="|alert ${message.get('alert')}|">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <i class="ace-icon fa fa-times"></i>
+                            </button>
+                            <h4 class="text-center" th:text="${message.get('msg')}"></h4>
+                        </div>
+                        <div class="widget-box table-detail">
+                        </div>
+                        <div class="dataTables_wrapper form-inline no-footer">
+                            <div class="row">
+                                <form th:action="@{/admin/booking/list}" id="search-form" method="get">
+                                    <div class="col-xs-2" id="tour-selection">
+                                        <label>Tour</label>
+                                        <input th:if="${tour}" name="tour" th:data-id="${tour.id}"
+                                               class="magicsearch col-xs-12 input-sm" id="tour"
+                                               autocomplete="off">
+                                        <input th:unless="${tour}" name="tour"
+                                               class="magicsearch col-xs-12 input-sm" id="tour"
+                                               autocomplete="off" placeholder="Chọn tour">
+                                    </div>
+                                    <div class="col-xs-2" id="trip-selection">
+                                        <label>Trip</label>
+                                        <input th:if="${trip}" name="trip" th:data-id="${trip.id}"
+                                               class="magicsearch col-xs-12 input-sm" id="trip"
+                                               autocomplete="off">
+                                        <input th:unless="${trip}" name="trip"
+                                               class="magicsearch col-xs-12 input-sm" id="trip"
+                                               autocomplete="off" placeholder="Chọn trip">
+                                    </div>
+                                    <div class="time-selection col-xs-3">
+                                        <div class="col-xs-6" id="time-selection-from">
+                                            <label>Từ</label>
+                                            <input th:if="${from}" name="from" id="from" th:value="*{from}"
+                                                   class="form-control col-xs-12 input-sm"
+                                                   type="datetime-local"/>
+                                            <input th:unless="${from}" name="from" id="from"
+                                                   class="form-control col-xs-12 input-sm"
+                                                   type="datetime-local"/>
+                                        </div>
+                                        <div class="col-xs-6" id="time-selection-to">
+                                            <label>Đến</label>
+                                            <input th:if="${to}" name="to" id="to" th:value="*{to}"
+                                                   class="form-control col-xs-12 input-sm"
+                                                   type="datetime-local"/>
+                                            <input th:unless="${to}" name="to" id="to"
+                                                   class="form-control col-xs-12 input-sm"
+                                                   type="datetime-local"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="dataTables_length">
+                                            <label>Tìm kiếm</label>
+                                            <input name="keyword" th:value="${keyword}" id="search-box"
+                                                   class=" col-xs-12 input-sm"
+                                                   placeholder="Từ khoá"
+                                                   aria-controls="dynamic-table"/>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" th:value="${billModel.page}" id="page" name="page">
+                                    <input type="hidden" th:value="${billModel.limit}" id="limit" name="limit">
+                                    <div class="col-xs-1">
+                                        <label></label>
+                                        <select name="sort" class="col-lg-12 input-sm" id="sort">
+                                            <option value="id">--Xếp theo--</option>
+                                            <option value="trip.departure"
+                                                    th:selected="${billModel.sortBy == 'trip.departure'}">
+                                                Điểm xuất phát
+                                            </option>
+                                            <option value="trip.departureTime"
+                                                    th:selected="${billModel.sortBy == 'trip.departureTime'}">Ngày đi
+                                            </option>
+                                            <option value="trip.returnTime"
+                                                    th:selected="${billModel.sortBy == 'trip.returnTime'}">Ngày về
+                                            </option>
+                                            <option value="trip.adultPrice"
+                                                    th:selected="${billModel.sortBy == 'trip.adultPrice'}">Giá người lớn
+                                            </option>
+                                            <option value="trip.childPrice"
+                                                    th:selected="${billModel.sortBy == 'trip.childPrice'}">Giá trẻ em
+                                            </option>
+                                            <option value="trip.infantPrice"
+                                                    th:selected="${billModel.sortBy == 'trip.infantPrice'}">Giá trẻ sơ
+                                                sinh
+                                            </option>
+                                            <option value="modifiedDate"
+                                                    th:selected="${billModel.sortBy == 'modifiedDate'}">Vừa chỉnh sửa
+                                            </option>
+                                        </select>
+                                        <select name="desc" class="col-lg-12 input-sm" id="desc">
+                                            <option value="0">Tăng dần</option>
+                                            <option value="1" th:selected="${billModel.isDesc}">Giảm dần</option>
+                                        </select>
+                                    </div>
+                                </form>
+                                <div class="col-xs-1">
+                                    <div class="dataTables_filter">
+                                        <div class="table-btn-controls">
+                                            <div class="pull-right tableTools-container">
+                                                <div class="dt-buttons btn-overlap btn-group">
+                                                    <a flag="info"
+                                                       class="dt-button-info buttons-colvis btn btn-white btn-primary btn-bold"
+                                                       data-toggle="tooltip" title="Thêm mới"
+                                                       th:href="|@{/admin/booking/add}|">
+                                                <span>
+                                                    <i class="fa fa-plus-circle bigger-110 purple"></i>
+                                                </span>
+                                                    </a>
+                                                    <a class="dt-button-info buttons-colvis btn btn-white btn-primary btn-bold"
+                                                       data-toggle="tooltip" title="Export to Excel"
+                                                       th:href="@{/admin/booking/export}">
+                                                <span>
+                                                    <i class="fa fa-database orange"></i>
+                                                </span>
+                                                    </a>
+                                                    <button id="btnDelete" type="button"
+                                                            onclick="warningBeforeDelete()"
+                                                            class="dt-button-info buttons btn btn-white btn-primary btn-bold"
+                                                            data-toggle="tooltip"
+                                                            title="Xóa" href="#" disabled>
+                                                    <span>
+                                                        <i class="fa fa-trash-o bigger-110 pink"></i>
+                                                    </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12" th:if="${tour}">
+                                    <h3 th:if="${trip}" style="text-align: center"
+                                        th:text="|${tour.name}  ${#calendars.format(trip.departureTime, 'dd/MM/yyyy')}|"></h3>
+                                    <h3 th:unless="${trip}" style="text-align: center" th:text="|${tour.name}|"></h3>
+                                </div>
+                                <div class="col-xs-12" th:unless="${tour}">
+                                    <h3 th:if="${trip}" style="text-align: center"
+                                        th:text="|${trip.code}  ${#calendars.format(trip.departureTime, 'dd/MM/yyyy')}|"></h3>
+                                </div>
+
+                                <div class="col-xs-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover dataTable no-footer">
+                                            <thead>
+                                            <tr>
+                                                <th><input type="checkbox" id="checkAll"></th>
+                                                <th class="sorting_">Người đặt</th>
+                                                <th class="sorting_">Tour</th>
+                                                <th class="sorting_">Trip</th>
+                                                <th class="sorting_">Người lớn</th>
+                                                <th class="sorting_">Trẻ em</th>
+                                                <th class="sorting_">Trẻ sơ sinh</th>
+                                                <th class="sorting_">Tổng tiền</th>
+                                                <th class="sorting_">Ngày đặt</th>
+                                                <th class="sorting_">Trạng thái</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <form th:action="@{/admin/booking/delete}" id="delete-form"
+                                                  th:object="${billModel}"
+                                                  method="post">
+                                                <input type="hidden" name="ref" th:value="${fullUri}">
+                                                <tr th:each="bill : *{results}">
+                                                    <td><input type="checkbox" th:id="|check_box_${bill.id}|"
+                                                               name="ids"
+                                                               th:value="${bill.id}"/></td>
+                                                    <td th:text="|${bill.ticketResponseModel.lastName} ${bill.ticketResponseModel.firstName} - ${bill.ticketResponseModel.email}|"></td>
+                                                    <td th:text="${bill.tourName}"></td>
+                                                    <td th:text="|${bill.codeOfTrip} - ${#calendars.format(bill.departureTimeOfTrip, 'dd/MM/yyyy')}|"></td>
+                                                    <td th:text="|${bill.adultQuantity} * ${#numbers.formatInteger(bill.adultPrice,3,'POINT')}đ|"></td>
+                                                    <td th:text="|${bill.childQuantity} * ${#numbers.formatInteger(bill.childPrice,3,'POINT')}đ|"></td>
+                                                    <td th:text="|${bill.infantQuantity} * ${#numbers.formatInteger(bill.infantPrice,3,'POINT')}đ|"></td>
+                                                    <td th:text="|${#numbers.formatInteger(bill.getBillCost(),3,'POINT')}đ + ${#numbers.formatInteger(bill.getExtraCost(),3,'POINT')}đ|"></td>
+                                                    <td th:text="${#calendars.format(bill.createdDate, 'dd/MM/yyyy')}"></td>
+                                                    <td th:text="${bill.getStatus()}"></td>
+                                                    <td>
+                                                        <a class="btn btn-sm btn-primary btn-edit" title="Cập nhật"
+                                                           th:href="@{|/admin/booking/edit?id=${bill.id}|}">
+                                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </form>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <select id="limit-select">
+                                        <option value="5" th:selected="${billModel.limit == 5}">5 row</option>
+                                        <option value="10" th:selected="${billModel.limit == 10}">10 row</option>
+                                        <option value="20" th:selected="${billModel.limit == 20}">20 row</option>
+                                        <option value="50" th:selected="${billModel.limit == 50}">50 row</option>
+                                        <option value="100" th:selected="${billModel.limit == 100}">100 row</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <ul class="pagination" id="pagination"></ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div th:replace="~{fragments/fragments-admin :: admin_footer}"></div>
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+    <th:block th:replace="~{fragments/fragments-admin :: admin_script}"></th:block>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        // Paging and search ///////////////////////////
+        var currentPage = [[${billModel.page}]]
+        var limit = [[${billModel.limit}]]
+        var totalPage = [[${billModel.totalPages}]]
+        $(function () {
+            window.pagObj = $('#pagination').twbsPagination({
+                totalPages: totalPage,
+                visiblePages: 5,
+                startPage: currentPage,
+                onPageClick: function (event, page) {
+                    if (currentPage != page) {
+                        $('#limit').val(limit);
+                        $('#page').val(page);
+                        $('#search-form').submit();
+                    }
+                }
+            })
+        });
+
+        ///////////////////////////
+        $("#search-box").on('keyup', function (e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                $(':input[name="trip"]').val("");
+                $("#search-form").submit();
+            }
+        });
+
+        $("#from").on('keyup', function (e) {
+            if (e.key === 'Backspace' || e.keyCode === 8) {
+                document.getElementById("from").value = "";
+                $("#search-form").submit();
+            }
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                $(':input[name="trip"]').val("");
+                $("#search-form").submit();
+            }
+        });
+
+        $("#to").on('keyup', function (e) {
+            if (e.key === 'Backspace' || e.keyCode === 8) {
+                document.getElementById("to").value = "";
+                $("#search-form").submit();
+            }
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                $(':input[name="trip"]').val("");
+                $("#search-form").submit();
+            }
+        });
+
+        $('#limit-select').on('change', function () {
+            var limitSelected = $('#limit-select option:selected').val();
+            $('#page').val(1);
+            $('#limit').val(limitSelected);
+            $("#search-form").submit();
+        });
+
+        $('#sort').on('change', function () {
+            $('#page').val(1);
+            $("#search-form").submit();
+        });
+
+        $('#desc').on('change', function () {
+            $('#page').val(1);
+            $("#search-form").submit();
+        });
+        ////////////////////////////////////////////////////////////////
+
+        var dataSource = JSON.parse([[${allTours.toString()}]]);
+
+        $('#tour').magicsearch({
+            dataSource: dataSource,
+            fields: ['name'],
+            id: 'id',
+            format: '%name%',
+            multiple: false,
+            focusShow: true,
+            hidden: true,
+            multiField: 'name',
+            noResult: 'Không tìm thấy kết quả',
+            dropdownBtn: true,
+            multiStyle: {
+                space: 5,
+                width: 200
+            },
+            success: function () {
+                $('#page').val(1);
+                $(':input[name="trip"]').val("");
+                $("#search-form").submit();
+            },
+            afterDelete: function () {
+                $('#page').val(1);
+                $(':input[name="trip"]').val("");
+                $("#search-form").submit();
+            }
+        });
+
+        var tripData = JSON.parse([[${allTrips.toString()}]]);
+
+        $('#trip').magicsearch({
+            dataSource: tripData,
+            fields: ['code', 'date'],
+            id: 'id',
+            format: '%code% · %date%',
+            multiple: false,
+            focusShow: true,
+            hidden: true,
+            multiField: 'code',
+            noResult: 'Không tìm thấy kết quả',
+            dropdownBtn: true,
+            multiStyle: {
+                space: 5,
+                width: 200
+            },
+            success: function () {
+                $('#page').val(1);
+                $("#search-form").submit();
+            },
+            afterDelete: function () {
+                $('#page').val(1);
+                $("#search-form").submit();
+            }
+        });
+
+        //Delete
+        $("#checkAll").change(function () {
+            $("input:checkbox").prop('checked', $(this).prop("checked"));
+        });
+
+        var checkboxes = $("input[type='checkbox']"),
+            submitButt = $("button[type='button']");
+
+        checkboxes.click(function () {
+            submitButt.attr("disabled", !checkboxes.is(":checked"));
+        });
+
+        function warningBeforeDelete() {
+            swal({
+                title: "Xác nhận xóa",
+                text: "Bạn có chắc chắn muốn xóa hay không",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-success",
+                cancelButtonClass: "btn-danger",
+                confirmButtonText: "Xác nhận",
+                cancelButtonText: "Hủy",
+            }).then(function (isConfirm) {
+                if (isConfirm.dismiss) {
+                } else $('#delete-form').submit();
+            });
+        }
+
+        /*]]>*/
+    </script>
+</body>
+</html>

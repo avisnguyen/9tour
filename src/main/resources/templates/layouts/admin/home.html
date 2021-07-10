@@ -1,0 +1,225 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-admin :: admin_head}"></head>
+<body class="no-skin">
+<th:block th:with="auth=${#authentication.getPrincipal()}"></th:block>
+<div th:replace="~{fragments/fragments-admin :: admin_header}"></div>
+<div class="main-container ace-save-state" id="main-container">
+    <script type="text/javascript">
+        try {
+            ace.settings.loadState('main-container')
+        } catch (e) {
+        }
+    </script>
+    <div th:replace="~{fragments/fragments-admin :: admin_menu}"></div>
+
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="ace-icon fa fa-home home-icon"></i>
+                        <a th:href="@{/admin}">Trang chủ</a>
+                    </li>
+                </ul><!-- /.breadcrumb -->
+            </div>
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>
+                        Dashboard
+                        <small>
+                            <i class="ace-icon fa fa-angle-double-right"></i>
+                            Thống kê
+                        </small>
+                    </h1>
+                </div><!-- /.page-header -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <div class="alert alert-block alert-info center">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <i class="ace-icon fa fa-times"></i>
+                            </button>
+                            <h4>
+                                <i class="ace-icon fa fa-check green"></i>
+                                Xin chào
+                                <span th:class="green"
+                                      th:utext="${#authentication.getPrincipal().getFullName()}"></span>
+                            </h4>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3"></div>
+                            <div class="col-lg-9">
+                                <div id="linechart_material" style="width: 900px; height: 500px"></div>
+                            </div>
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-9">
+                                <div style="width: 900px; height: 500px" class="col-lg-12 infobox-container">
+                                    <div class="infobox infobox-green">
+                                        <div class="infobox-icon">
+                                            <i class="ace-icon fa  fa-pencil"></i>
+                                        </div>
+                                        <div class="infobox-data">
+                                            <span class="infobox-data-number">[[${data.totalPost}]]</span>
+                                            <div class="infobox-content">bài viết</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="infobox infobox-blue">
+                                        <div class="infobox-icon">
+                                            <i class="ace-icon fa fa-ticket"></i>
+                                        </div>
+
+                                        <div class="infobox-data">
+                                            <span class="infobox-data-number">[[${data.totalTicket}]]</span>
+                                            <div class="infobox-content">tổng số vé</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="infobox infobox-pink">
+                                        <div class="infobox-icon">
+                                            <i class="ace-icon fa fa-umbrella"></i>
+                                        </div>
+
+                                        <div class="infobox-data">
+                                            <span class="infobox-data-number">[[${data.totalTour}]]</span>
+                                            <div class="infobox-content">tour</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="infobox infobox-red">
+                                        <div class="infobox-icon">
+                                            <i class="ace-icon fa fa-plane"></i>
+                                        </div>
+
+                                        <div class="infobox-data">
+                                            <span class="infobox-data-number">[[${data.totalTrip}]]</span>
+                                            <div class="infobox-content">chuyến đi</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="infobox infobox-orange2">
+                                        <div class="infobox-chart">
+                                        <span class="sparkline" data-values="196,128,202,177,154,94,100,170,224"><canvas
+                                                width="44" height="33"
+                                                style="display: inline-block; width: 44px; height: 33px; vertical-align: top;"></canvas></span>
+                                        </div>
+
+                                        <div class="infobox-data">
+                                            <div class="infobox-content">Tổng doanh thu</div>
+                                            <span>[[${#numbers.formatDecimal(data.totalMoney, 1, 'DEFAULT', 2, 'DEFAULT')}]]</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="infobox infobox-blue2">
+                                        <div class="infobox-icon">
+                                            <i class="ace-icon fa fa-user"></i>
+                                        </div>
+
+                                        <div class="infobox-data">
+                                            <span class="infobox-data-number">[[${data.totalPassenger}]]</span>
+                                            <div class="infobox-content">hành khách</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-6"></div>
+
+                                    <!--                                    <div class="infobox infobox-green infobox-small infobox-dark">-->
+                                    <!--                                        <div class="infobox-progress">-->
+                                    <!--                                            <div class="easy-pie-chart percentage" data-percent="61" data-size="39"-->
+                                    <!--                                                 style="height: 39px; width: 39px; line-height: 38px;">-->
+                                    <!--                                                <span class="percent">35</span>-->
+                                    <!--                                                <canvas height="48" width="48"-->
+                                    <!--                                                        style="height: 39px; width: 39px;"></canvas>-->
+                                    <!--                                            </div>-->
+                                    <!--                                        </div>-->
+
+                                    <!--                                        <div class="infobox-data">-->
+                                    <!--                                            <div class="infobox-content">Vé</div>-->
+                                    <!--                                            <div class="infobox-content">Được đặt</div>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+
+                                    <!--                                    <div class="infobox infobox-blue infobox-small infobox-dark">-->
+                                    <!--                                        <div class="infobox-chart">-->
+                                    <!--                                        <span class="sparkline" data-values="3,4,2,3,4,4,2,2">-->
+                                    <!--                                            <canvas width="50" height="19"-->
+                                    <!--                                                    style="display: inline-block; width: 39px; height: 19px; vertical-align: top;"></canvas>-->
+                                    <!--                                        </span>-->
+                                    <!--                                        </div>-->
+                                    <!--                                        <div class="infobox-data">-->
+                                    <!--                                            <div class="infobox-content">$$</div>-->
+                                    <!--                                            <div class="infobox-content">128.355.000đ</div>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+
+                                    <!--                                    <div class="infobox infobox-grey infobox-small infobox-dark">-->
+                                    <!--                                        <div class="infobox-icon">-->
+                                    <!--                                            <i class="ace-icon fa fa-download"></i>-->
+                                    <!--                                        </div>-->
+
+                                    <!--                                        <div class="infobox-data">-->
+                                    <!--                                            <div class="infobox-content">137</div>-->
+                                    <!--                                            <div class="infobox-content">KH</div>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+                                </div>
+                            </div>
+                        </div><!-- /.row -->
+
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/fragments-admin :: admin_footer}"></div>
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+</div>
+<div th:replace="~{fragments/fragments-admin :: admin_script}"></div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages': ['line']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Tháng');
+        data.addColumn('number', 'Tour');
+        data.addColumn('number', 'Dịch vụ kèm theo');
+
+        data.addRows([
+            [1, 1723000, 880000],
+            [2, 2034000, 950000],
+            [3, 3504000, 750000],
+            [4, 4117000, 1880000],
+            [5, 4119000, 1760000],
+            [6, 4838000, 2460000],
+            [7, 4676000, 1230000],
+            [8, 4231000, 2920000],
+            [9, 4423000, 3290000],
+            [10, 4617000, 3090000],
+            [11, 4920000, 3790000],
+            [12, 5120000, 2840000]
+        ]);
+
+        var options = {
+            chart: {
+                title: 'Doanh thu',
+                subtitle: 'đơn vị Việt Nam đồng (vnđ)'
+            },
+            width: 900,
+            height: 500
+        };
+
+        var chart = new google.charts.Line(document.getElementById('linechart_material'));
+
+        chart.draw(data, google.charts.Line.convertOptions(options));
+    }
+</script>
+</body>
+</html>

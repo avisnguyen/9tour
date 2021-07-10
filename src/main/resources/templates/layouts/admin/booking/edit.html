@@ -1,0 +1,913 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-admin :: admin_head}"></head>
+<body class="no-skin">
+<div th:replace="~{fragments/fragments-admin :: admin_header}"></div>
+<div class="main-container ace-save-state" id="main-container">
+    <script type="text/javascript">
+        try {
+            ace.settings.loadState('main-container')
+        } catch (e) {
+        }
+    </script>
+    <div th:replace="~{fragments/fragments-admin :: admin_menu}"></div>
+
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="ace-icon fa fa-home home-icon"></i>
+                        <a th:href="@{/admin}">Trang chủ</a>
+                    </li>
+
+                    <li>
+                        <a th:href="@{/admin/booking/list}">Vé</a>
+                    </li>
+                    <li th:if="${billModel.id}" class="active">Cập nhật thông tin</li>
+                    <li th:unless="${billModel.id}" class="active">Thêm mới</li>
+                </ul>
+            </div>
+            <div class="page-content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div th:if="${message}" th:class="|alert ${message.get('alert')}|">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <i class="ace-icon fa fa-times"></i>
+                            </button>
+                            <h4 class="text-center" th:text="${message.get('msg')}"></h4>
+                        </div>
+                        <form th:unless="${billModel.id}" class="form-horizontal" method="get" id="search-form">
+                            <div class="form-group">
+                                <label for="tour-select" class="col-sm-3 control-label no-padding-right">Chọn
+                                    Tour</label>
+                                <div class="col-sm-7" th:if="${allTours}">
+                                    <input th:if="${tour}" th:data-id="${tour.id}" name="tourId"
+                                           class="magicsearch form-control" id="tour-select"
+                                           autocomplete="off">
+                                    <input th:unless="${tour}" name="tourId"
+                                           class="magicsearch form-control" id="tour-select"
+                                           autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="trip-select" class="col-sm-3 control-label no-padding-right">Chọn
+                                    Trip</label>
+                                <div class="col-sm-7" th:if="${allTrips}">
+                                    <input th:if="${trip}" th:data-id="${trip.id}" name="tripId"
+                                           class="magicsearch form-control" id="trip-select"
+                                           autocomplete="off">
+                                    <input th:unless="${trip}" name="tripId"
+                                           class="magicsearch form-control" id="trip-select"
+                                           autocomplete="off">
+                                    <input type="hidden" name="ref" th:value="${ref}"/>
+                                </div>
+                            </div>
+                        </form>
+                        <form class="form-horizontal" method="post" role="form" id="formSubmit"
+                              th:object="${bookingRequestModel}" enctype="multipart/form-data">
+                            <th:block th:if="${billModel.id}">
+                                <input type="hidden" th:if="${billModel.id}" name="billId" th:value="${billModel.id}">
+                                <div class="form-group">
+                                    <span class="col-sm-3 control-label no-padding-right"></span>
+                                    <div class="col-sm-7">
+                                        <h4 th:text="|Tour: ${billModel.tourName}|"></h4>
+                                        <input type="hidden" name="tourName" th:value="${billModel.tourName}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <span class="col-sm-3 control-label no-padding-right"></span>
+                                    <div class="col-sm-7">
+                                        <h4 th:text="|Trip: ${billModel.codeOfTrip} - ${#calendars.format(billModel.departureTimeOfTrip, 'dd-MM-yyyy')}|"></h4>
+                                        <input type="hidden" name="codeOfTrip" th:value="${billModel.codeOfTrip}">
+                                        <input type="hidden" name="tripDepartureTime"
+                                               th:value="${billModel.departureTimeOfTrip}">
+                                        <input type="hidden" name="tripId"
+                                               th:value="${billModel.getTripResponseModel.id}">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-7 hr hr-double"></div>
+                                </div>
+                                <div class="form-group">
+                                    <span class="col-sm-3"></span>
+                                    <h4 class="col-sm-7">Thông tin liên lạc</h4>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact-last-name" class="col-sm-3 control-label no-padding-right">
+                                        Họ </label>
+                                    <div class="col-sm-3">
+                                        <input id="contact-last-name"
+                                               th:value="${billModel.getTicketResponseModel.lastName}"
+                                               class="form-control"/>
+                                    </div>
+                                    <label for="contact-first-name" class="col-sm-1 control-label no-padding-right">
+                                        Tên </label>
+                                    <div class="col-sm-3">
+                                        <input id="contact-first-name"
+                                               th:value="${billModel.getTicketResponseModel.firstName}"
+                                               class="form-control" required/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact-phone" class="col-sm-3 control-label no-padding-right">
+                                        SĐT </label>
+                                    <div class="col-sm-3">
+                                        <input id="contact-phone" th:value="${billModel.getTicketResponseModel.phone}"
+                                               class="form-control"
+                                               required/>
+                                    </div>
+                                    <label for="contact-email" class="col-sm-1 control-label no-padding-right">
+                                        Email </label>
+                                    <div class="col-sm-3">
+                                        <input id="contact-email" th:value="${billModel.getTicketResponseModel.email}"
+                                               class="form-control"
+                                               required/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact-address" class="col-sm-3 control-label no-padding-right"> Địa
+                                        chỉ </label>
+                                    <div class="col-sm-3">
+                                        <input id="contact-address"
+                                               th:value="${billModel.getTicketResponseModel.address}"
+                                               class="form-control" required/>
+                                    </div>
+                                    <label for="contact-nationality" class="col-sm-1 control-label no-padding-right">
+                                        Quốc tịch </label>
+                                    <div class="col-sm-3">
+                                        <input id="contact-nationality"
+                                               th:value="${billModel.getTicketResponseModel.nationality}"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-7 hr hr-double"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adult-price" class="col-sm-3 control-label no-padding-right">Vé
+                                        người lớn</label>
+                                    <h4 id="adult-price"
+                                        th:text="|${#numbers.formatInteger(billModel.adultPrice,3,'POINT')} đ|"
+                                        class="col-sm-1 control-label red"></h4>
+                                    <h4 class="col-sm-1 control-label no-padding-right">*</h4>
+                                    <h4 class="col-sm-1 control-label red" id="adult-quantity"
+                                        th:text="${billModel.adultQuantity}">
+                                    </h4>
+                                    <h4 class="col-sm-1 control-label no-padding-right">=</h4>
+                                    <h4 class="col-sm-3 control-label no-padding-left red" id="adult-cost"
+                                        th:text="|${#numbers.formatInteger(billModel.getAdultCost(),3,'POINT')} đ|">
+                                    </h4>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adult-price" class="col-sm-3 control-label no-padding-right">Vé
+                                        trẻ em</label>
+                                    <h4 id="child-price"
+                                        th:text="|${#numbers.formatInteger(billModel.childPrice,3,'POINT')} đ|"
+                                        class="col-sm-1 control-label red"></h4>
+                                    <h4 class="col-sm-1 control-label no-padding-right">*</h4>
+                                    <h4 class="col-sm-1 control-label red" id="child-quantity"
+                                        th:text="${billModel.childQuantity}">
+                                    </h4>
+                                    <h4 class="col-sm-1 control-label no-padding-right">=</h4>
+                                    <h4 class="col-sm-3 control-label no-padding-left red" id="child-cost"
+                                        th:text="|${#numbers.formatInteger(billModel.getChildCost(),3,'POINT')} đ|">
+                                    </h4>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adult-price" class="col-sm-3 control-label no-padding-right">Vé
+                                        trẻ dưới 2t</label>
+                                    <h4 id="infant-price"
+                                        th:text="|${#numbers.formatInteger(billModel.infantPrice,3,'POINT')} đ|"
+                                        class="col-sm-1 control-label red"></h4>
+                                    <h4 class="col-sm-1 control-label no-padding-right">*</h4>
+                                    <h4 class="col-sm-1 control-label red" id="infant-quantity"
+                                        th:text="${billModel.infantQuantity}">
+                                    </h4>
+                                    <h4 class="col-sm-1 control-label no-padding-right">=</h4>
+                                    <h4 class="col-sm-3 control-label no-padding-left red" id="infant-cost"
+                                        th:text="|${#numbers.formatInteger(billModel.getInfantCost(),3,'POINT')} đ|">
+                                    </h4>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-7"></div>
+                                    <div class="col-sm-3 hr hr-dotted"></div>
+                                </div>
+                                <div th:if="${billModel.getExtraBillResponseModels.size()>0}"
+                                     th:each="extraBill,state : ${billModel.getExtraBillResponseModels}">
+                                    <div class="form-group">
+                                        <label th:for="|extra-bill-price-${state.index}|"
+                                               class="col-sm-3 control-label no-padding-right"
+                                               th:text="${extraBill.nameOfService}"></label>
+                                        <h4 class="col-sm-1 control-label green"
+                                            th:id="|extra-bill-price-${state.index}|"
+                                            th:text="|${#numbers.formatInteger(extraBill.price,3,'POINT')} đ|">
+                                        </h4>
+                                        <h4 th:for="|extra-bill-quantity-${state.index}|"
+                                            class="col-sm-1 control-label no-padding-right">*</h4>
+                                        <h4 class="col-sm-1 control-label green"
+                                            th:id="|extra-bill-quantity-${state.index}|"
+                                            th:text="${extraBill.quantity}">
+                                        </h4>
+                                        <h4 th:for="|extra-${state.index}-cost|"
+                                            class="col-sm-1 control-label no-padding-right">=</h4>
+                                        <h4 class="col-sm-3 control-label green"
+                                            th:id="|extra-bill-cost-${state.index}|"
+                                            th:text="|${#numbers.formatInteger(extraBill.cost,3,'POINT')} đ|">
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-6"></div>
+                                    <div class="col-sm-4 hr hr-dotted"></div>
+                                </div>
+                                <div class="form-group">
+                                    <h4 class="col-sm-4 control-label no-padding-right blue"
+                                        th:text="${billModel.getPaymentStatus()}"></h4>
+                                    <div th:if="${billModel.getPaymentStatusCode() == 1}">
+                                        <h6 class="col-sm-1 control-label no-padding-right">Mã giao dịch:</h6>
+                                        <h4 class="col-sm-1 control-label blue"
+                                            th:text="${billModel.getPaymentTransactionCode()}">
+                                        </h4>
+                                    </div>
+                                    <div th:unless="${billModel.getPaymentStatusCode() == 1}">
+                                        <label class="col-sm-1 control-label no-padding-right"></label>
+                                        <div class="col-sm-1">
+                                            <a th:href="@{/admin/booking/}+${billModel.id}+'/pay'"
+                                               class="btn btn-sm btn-info">Thanh toán</a>
+                                        </div>
+                                    </div>
+                                    <label for="total-cost" class="col-sm-1 control-label no-padding-right">Tổng
+                                        cộng</label>
+                                    <h4 class="col-sm-3 control-label blue" id="total-cost"
+                                        th:text="|${#numbers.formatInteger(billModel.getCost(),3,'POINT')} đ|">
+                                    </h4>
+                                </div>
+                                <div>
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-7 hr hr-double"></div>
+                                </div>
+                                <div th:each="i : ${#numbers.sequence(0, billModel.getTotalPassenger()-1)}">
+                                    <div class="form-group">
+                                        <span class="col-sm-3"></span>
+                                        <h4 class="col-sm-7" th:text="|Hành khách ${i+1}|"></h4>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label no-padding-right"> Họ </label>
+                                        <div class="col-sm-3">
+                                            <input th:if="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                   th:name="'passengers['+${i}+'].lastName'"
+                                                   th:value="${billModel.getTicketResponseModel.getPassengerResponseModels[__${i}__].lastName}"
+                                                   class="form-control" required/>
+                                            <input th:unless="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                   th:name="'passengers['+${i}+'].lastName'"
+                                                   class="form-control" required/>
+                                        </div>
+                                        <label class="col-sm-1 control-label no-padding-right"> Tên </label>
+                                        <div class="col-sm-3">
+                                            <input th:if="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                   th:name="'passengers['+${i}+'].firstName'"
+                                                   th:value="${billModel.getTicketResponseModel.getPassengerResponseModels[__${i}__].firstName}"
+                                                   class="form-control" required/>
+                                            <input th:unless="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                   th:name="'passengers['+${i}+'].firstName'"
+                                                   class="form-control" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label no-padding-right"> SĐT </label>
+                                        <div class="col-sm-3">
+                                            <input th:if="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                   th:name="'passengers['+${i}+'].phone'"
+                                                   th:value="${billModel.getTicketResponseModel.getPassengerResponseModels[__${i}__].phone}"
+                                                   class="form-control" required/>
+                                            <input th:unless="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                   th:name="'passengers['+${i}+'].phone'"
+                                                   class="form-control" required/>
+                                        </div>
+                                        <label class="col-sm-1 control-label no-padding-right"> Giới tính </label>
+                                        <div class="col-sm-3">
+                                            <select th:if="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                    th:name="'passengers['+${i}+'].sex'">
+                                                <option>--Không tiết lộ--</option>
+                                                <option value="Nam"
+                                                        th:selected="${billModel.getTicketResponseModel.getPassengerResponseModels[__${i}__].sex.equals('Nam')}">
+                                                    Nam
+                                                </option>
+                                                <option value="Nữ"
+                                                        th:selected="${billModel.getTicketResponseModel.getPassengerResponseModels[__${i}__].sex.equals('Nữ')}">
+                                                    Nữ
+                                                </option>
+                                            </select>
+                                            <select th:unless="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                    th:name="'passengers['+${i}+'].sex'">
+                                                <option>--Không tiết lộ--</option>
+                                                <option value="Nam">
+                                                    Nam
+                                                </option>
+                                                <option value="Nữ">
+                                                    Nữ
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label no-padding-right"> Ngày sinh </label>
+                                        <div class="col-sm-3">
+                                            <input th:if="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                   th:name="'passengers['+${i}+'].birthday'"
+                                                   th:value="${#calendars.format(billModel.getTicketResponseModel.getPassengerResponseModels[__${i}__].birthday, 'yyyy-MM-dd')}"
+                                                   class="form-control date-picker" type="date" required/>
+                                            <input th:unless="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                   th:name="'passengers['+${i}+'].birthday'"
+                                                   class="form-control date-picker" type="date" required/>
+                                        </div>
+                                        <label class="col-sm-1 control-label no-padding-right"> Quốc tịch </label>
+                                        <div class="col-sm-3">
+                                            <input th:if="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                   th:name="'passengers['+${i}+'].nationality'"
+                                                   th:value="${billModel.getTicketResponseModel.getPassengerResponseModels[__${i}__].nationality}"
+                                                   class="form-control" required/>
+                                            <input th:unless="${billModel.getTicketResponseModel.getPassengerResponseModels.size() > i}"
+                                                   th:name="'passengers['+${i}+'].nationality'"
+                                                   class="form-control" required/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-5"></div>
+                                        <div class="col-sm-3 hr hr-dotted"></div>
+                                        <div class="col-sm-4"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-7 hr hr-double"></div>
+                                </div>
+                                <div class="form-group">
+                                    <span class="col-sm-3"></span>
+                                    <h4 class="col-sm-7">Yêu cầu huỷ vé</h4>
+                                </div>
+                                <div id="refund-request-list" th:if="${billModel.getRefundResponses.size()>0}"
+                                     th:each="refund, state : ${billModel.getRefundResponses}">
+                                    <div class="form-group">
+                                        <span class="col-sm-3"></span>
+                                        <h4 class="col-sm-7" th:text="'#'+${state.index+1}"></h4>
+                                    </div>
+                                    <div th:unless="${state.last}">
+                                        <div class="form-group">
+                                            <label for="refund-sender" class="col-sm-3 control-label no-padding-right">Người
+                                                gửi:</label>
+                                            <label id="refund-sender" class="col-sm-1 control-label align-left">
+                                                <u th:text="${refund.sender}"></u>
+                                            </label>
+
+                                            <label for="refund-sender-email"
+                                                   class="col-sm-1 control-label no-padding-right">Email</label>
+                                            <label id="refund-sender-email" class="col-sm-1 control-label align-center">
+                                                <u th:text="${refund.contactMail}"></u>
+                                            </label>
+                                            <label for="refund-sender-phone"
+                                                   class="col-sm-1 control-label no-padding-right">SĐT</label>
+                                            <label id="refund-sender-phone" class="col-sm-1 control-label align-center">
+                                                <u th:text="${refund.contactPhone}"></u>
+                                            </label>
+                                            <label for="refund-date"
+                                                   class="col-sm-1 control-label no-padding-right">Ngày gửi</label>
+                                            <label id="refund-date" class="col-sm-1 control-label align-center">
+                                                <u th:text="${#calendars.format(refund.createdDate, 'dd/MM/yyyy HH:mm')}"></u>
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="refund-request"
+                                                   class="col-sm-3 control-label no-padding-right">Yêu cầu (KH):</label>
+                                            <span id="refund-request" class="col-sm-7 control-label"
+                                                  th:value="${refund.request}">
+                                            </span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="refund-response"
+                                                   class="col-sm-3 control-label no-padding-right">Phản hồi
+                                                (NV):</label>
+                                            <span id="refund-response" class="col-sm-7 control-label align-left"
+                                                  th:text="${refund.response}">
+                                            </span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="refund-note"
+                                                   class="col-sm-3 control-label no-padding-right">Ghi chú:</label>
+                                            <span id="refund-note" class="col-sm-7 control-label align-left"
+                                                  th:text="${refund.note}">
+                                            </span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="refund-receiver"
+                                                   class="col-sm-3 control-label no-padding-right">Người tiếp
+                                                nhận</label>
+                                            <span id="refund-receiver" class="col-sm-1 control-label align-left"
+                                                  th:text="${refund.receiver}">
+                                            </span>
+                                            <label for="refund-status" class="col-sm-1 control-label no-padding-right">Trạng
+                                                thái</label>
+                                            <span id="refund-status" class="col-sm-1 control-label align-left"
+                                                  th:text="|${refund.status} - closed|">
+                                            </span>
+                                            <label for="refund-status" class="col-sm-1 control-label no-padding-right">Phản
+                                                hồi lúc</label>
+                                            <span th:if="${refund.modifiedDate}" id="refund-rep-date"
+                                                  class="col-sm-1 control-label align-left"
+                                                  th:text="${#calendars.format(refund.modifiedDate, 'dd/MM/yyyy HH:mm')}">
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-3"></div>
+                                            <div class="col-sm-7 hr hr-dotted"></div>
+                                        </div>
+                                    </div>
+                                    <div th:if="${state.last}">
+                                        <div class="form-group">
+                                            <label for="refund-sender" class="col-sm-3 control-label no-padding-right">Người
+                                                gửi</label>
+                                            <div class="col-sm-3">
+                                                <input id="refund-sender" name="sender" type="text"
+                                                       th:value="${refund.sender}"
+                                                       class="form-control" readonly/>
+                                            </div>
+                                            <label for="refund-sender-date"
+                                                   class="col-sm-1 control-label no-padding-right">Ngày gửi</label>
+                                            <div class="col-sm-3">
+                                                <input id="refund-sender-date"
+                                                       th:value="${#calendars.format(refund.createdDate, 'dd/MM/yyyy HH:mm')}"
+                                                       class="form-control" readonly/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="refund-sender-email"
+                                                   class="col-sm-3 control-label no-padding-right">Email</label>
+                                            <div class="col-sm-3">
+                                                <input id="refund-sender-email" name="contactMail" type="text"
+                                                       th:value="${refund.contactMail}"
+                                                       class="form-control" readonly/>
+                                            </div>
+                                            <label for="refund-sender-phone"
+                                                   class="col-sm-1 control-label no-padding-right">SĐT</label>
+                                            <div class="col-sm-3">
+                                                <input id="refund-sender-phone" name="contactPhone" type="text"
+                                                       th:value="${refund.contactPhone}"
+                                                       class="form-control" readonly/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="refund-sender-request"
+                                                   class="col-sm-3 control-label no-padding-right">Yêu cầu (KH)</label>
+                                            <div class="col-sm-7">
+                                            <textarea id="refund-sender-request"
+                                                      th:text="${refund.request}"
+                                                      class="form-control" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="refund-sender-response"
+                                                   class="col-sm-3 control-label no-padding-right">Phản hồi (NV)</label>
+                                            <div class="col-sm-7">
+                                            <textarea id="refund-sender-response" name="response"
+                                                      th:text="${refund.response}"
+                                                      class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="refund-sender-note"
+                                                   class="col-sm-3 control-label no-padding-right">Ghi chú</label>
+                                            <div class="col-sm-7">
+                                            <textarea id="refund-sender-note" name="note"
+                                                      th:text="${refund.note}"
+                                                      class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="refund-receiver"
+                                                   class="col-sm-3 control-label no-padding-right">Người tiếp
+                                                nhận</label>
+                                            <div class="col-sm-3">
+                                                <input th:if="${refund.receiver}" id="refund-receiver" name="receiver"
+                                                       th:value="${refund.receiver}"
+                                                       class="form-control" readonly/>
+                                                <input th:unless="${refund.receiver}" id="refund-receiver"
+                                                       name="receiver"
+                                                       th:value="${#authentication.getName()}"
+                                                       class="form-control" readonly/>
+                                            </div>
+                                            <label for="refund-status" class="col-sm-1 control-label no-padding-right">Trạng
+                                                thái</label>
+                                            <div class="col-sm-1">
+                                                <select id="refund-status" name="status"
+                                                        class="form-control"
+                                                        th:value="${refund.status}">
+                                                    <option value="no-update">Không cập nhật</option>
+                                                    <option value="pending" th:selected="${refund.status == 'pending'}">
+                                                        Chờ hoàn tiền
+                                                    </option>
+                                                    <option value="refunded"
+                                                            th:selected="${refund.status == 'refunded'}">
+                                                        Đã xác nhận
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <label for="refund-status" class="col-sm-1 control-label no-padding-right">Phản
+                                                hồi lúc</label>
+                                            <span th:if="${refund.modifiedDate}" id="refund-rep-date"
+                                                  class="col-sm-1 control-label align-left"
+                                                  th:text="${#calendars.format(refund.modifiedDate, 'dd/MM/yyyy HH:mm')}">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="refund-request" th:unless="${billModel.getRefundResponses.size()>0}">
+                                    <div class="form-group">
+                                        <label for="refund-sender" class="col-sm-3 control-label no-padding-right">Người
+                                            gửi</label>
+                                        <div class="col-sm-7">
+                                            <input id="refund-sender" name="sender"
+                                                   th:value="${#authentication.getName()}"
+                                                   class="form-control" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="refund-sender-email"
+                                               class="col-sm-3 control-label no-padding-right">Email</label>
+                                        <div class="col-sm-3">
+                                            <input id="refund-sender-email" name="contactMail" type="text"
+                                                   value="cskh@9tour.xyz"
+                                                   class="form-control" readonly/>
+                                        </div>
+                                        <label for="refund-sender-phone"
+                                               class="col-sm-1 control-label no-padding-right">SĐT</label>
+                                        <div class="col-sm-3">
+                                            <input id="refund-sender-phone" name="contactPhone" type="text"
+                                                   value="19001234"
+                                                   class="form-control" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="refund-sender-response"
+                                               class="col-sm-3 control-label no-padding-right">Phản hồi (NV)</label>
+                                        <div class="col-sm-7">
+                                            <textarea id="refund-sender-response" name="response"
+                                                      class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="refund-sender-note"
+                                               class="col-sm-3 control-label no-padding-right">Ghi chú</label>
+                                        <div class="col-sm-7">
+                                            <textarea id="refund-sender-note" name="note"
+                                                      class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-6">
+                                        </div>
+                                        <label for="refund-status" class="col-sm-1 control-label no-padding-right">Trạng
+                                            thái</label>
+                                        <div class="col-sm-3">
+                                            <select id="refund-status" name="status"
+                                                    class="form-control">
+                                                <option value="no-update">Không cập nhật</option>
+                                                <option value="pending">Chờ hoàn tiền</option>
+                                                <option value="refunded">Đã xác nhận</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="clearfix form-actions">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button class="btn btn-sm btn-success" type="submit" id="btn-update">
+                                            <i class="ace-icon fa fa-check bigger-110"></i>
+                                            Cập nhật thông tin
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" type="button" id="btn-cancel"
+                                                onclick="warningBeforeCancel()">
+                                            <i class="ace-icon fa fa-times red2 bigger-110"></i>
+                                            Hủy
+                                        </button>
+                                        <input type="hidden" name="ref" th:if="${ref}" th:value="${ref}"
+                                               id="cancel-link"/>
+                                    </div>
+                                </div>
+                            </th:block>
+                            <th:block th:unless="${billModel.id}">
+                                <input th:if="${trip.id}" type="hidden" name="tripId" th:value="${trip.id}">
+                                <div>
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-7 hr hr-double"></div>
+                                </div>
+                                <div class="form-group">
+                                    <span class="col-sm-3"></span>
+                                    <h4 class="col-sm-7">Thông tin liên lạc</h4>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right"> Họ </label>
+                                    <div class="col-sm-3">
+                                        <input th:field="*{lastName}"
+                                               class="form-control" required/>
+                                    </div>
+                                    <label class="col-sm-1 control-label no-padding-right"> Tên </label>
+                                    <div class="col-sm-3">
+                                        <input th:field="*{firstName}" value=""
+                                               class="form-control" required/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right"> SĐT </label>
+                                    <div class="col-sm-3">
+                                        <input th:field="*{phone}" value="" class="form-control"
+                                               required/>
+                                    </div>
+                                    <label class="col-sm-1 control-label no-padding-right"> Email </label>
+                                    <div class="col-sm-3">
+                                        <input th:field="*{email}" value="" class="form-control"
+                                               required/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right"> Địa chỉ </label>
+                                    <div class="col-sm-3">
+                                        <input th:field="*{address}" value=""
+                                               class="form-control" required/>
+                                    </div>
+                                    <label class="col-sm-1 control-label no-padding-right"> Quốc tịch </label>
+                                    <div class="col-sm-3">
+                                        <input th:field="*{nationality}" value=""
+                                               class="form-control" required/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-7 hr hr-double"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adult-price" class="col-sm-3 control-label no-padding-right">Vé
+                                        người lớn</label>
+                                    <div class="col-sm-1">
+                                        <input th:if="${trip.id}" id="adult-price" type="number" name="adultPrice"
+                                               th:value="${trip.adultPrice}"
+                                               class="form-control" readonly/>
+                                        <input th:unless="${trip.id}" id="adult-price" type="number" name="adultPrice"
+                                               value="10000000000"
+                                               class="form-control" readonly/>
+                                    </div>
+                                    <label for="adult-quantity"
+                                           class="col-sm-1 control-label no-padding-right">*</label>
+                                    <div class="col-sm-1">
+                                        <input id="adult-quantity" type="number" min="0"
+                                               oninput="this.value = Math.round(this.value);" name="adultQuantity"
+                                               class="form-control"/>
+                                    </div>
+                                    <label for="adult-cost" class="col-sm-1 control-label no-padding-right">=</label>
+                                    <div class="col-sm-3">
+                                        <input id="adult-cost" type="number"
+                                               class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="child-price" class="col-sm-3 control-label no-padding-right">Vé
+                                        trẻ em</label>
+                                    <div class="col-sm-1">
+                                        <input th:if="${trip.id}" id="child-price" type="number" name="childPrice"
+                                               th:value="${trip.childPrice}"
+                                               class="form-control" readonly/>
+                                        <input th:unless="${trip.id}" id="child-price" type="number" name="childPrice"
+                                               value="10000000000"
+                                               class="form-control" readonly/>
+                                    </div>
+                                    <label for="child-quantity"
+                                           class="col-sm-1 control-label no-padding-right">*</label>
+                                    <div class="col-sm-1">
+                                        <input id="child-quantity" type="number" min="0"
+                                               oninput="this.value = Math.round(this.value);" name="childQuantity"
+                                               class="form-control"/>
+                                    </div>
+                                    <label for="child-cost" class="col-sm-1 control-label no-padding-right">=</label>
+                                    <div class="col-sm-3">
+                                        <input id="child-cost" type="number"
+                                               class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="infant-price" class="col-sm-3 control-label no-padding-right">Vé
+                                        trẻ dưới 2t</label>
+                                    <div class="col-sm-1">
+                                        <input th:if="${trip.id}" id="infant-price" type="number" name="infantPrice"
+                                               th:value="${trip.infantPrice}"
+                                               class="form-control" readonly/>
+                                        <input th:unless="${trip.id}" id="infant-price" type="number" name="infantPrice"
+                                               value="10000000000"
+                                               class="form-control" readonly/>
+                                    </div>
+                                    <label for="infant-quantity"
+                                           class="col-sm-1 control-label no-padding-right">*</label>
+                                    <div class="col-sm-1">
+                                        <input id="infant-quantity" type="number" min="0"
+                                               oninput="this.value = Math.round(this.value);" name="infantQuantity"
+                                               class="form-control"/>
+                                    </div>
+                                    <label for="infant-cost" class="col-sm-1 control-label no-padding-right">=</label>
+                                    <div class="col-sm-3">
+                                        <input id="infant-cost" type="number"
+                                               class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-7"></div>
+                                    <div class="col-sm-3 hr hr-dotted"></div>
+                                </div>
+                                <div th:if="${tour.getExtraServiceResponseModels.size()>0}"
+                                     th:each="extraService, state : ${tour.getExtraServiceResponseModels}">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label no-padding-right"
+                                               th:text="${extraService.name}"></label>
+                                        <div class="col-sm-1">
+                                            <input th:id="|extra-service-price-${state.index}|" type="number"
+                                                   th:name="extraServices[__${state.index}__].price"
+                                                   th:value="${extraService.price}"
+                                                   class="form-control" readonly/>
+                                        </div>
+                                        <label class="col-sm-1 control-label no-padding-right">*</label>
+                                        <div class="col-sm-1">
+                                            <input th:field="*{getExtraServices[__${state.index}__].quantity}"
+                                                   type="number"
+                                                   min="0"
+                                                   th:data-price="${extraService.price}"
+                                                   class="form-control input-price-extra-service"/>
+                                        </div>
+                                        <label class="col-sm-1 control-label no-padding-right">=</label>
+                                        <div class="col-sm-3">
+                                            <input type="number" th:id="|extra-service-cost-${state.index}|"
+                                                   class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" th:value="${extraService.id}"
+                                           th:name="extraServices[__${state.index}__].id">
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-6"></div>
+                                    <div class="col-sm-4 hr hr-dotted"></div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-6"></div>
+                                    <label for="total-cost" class="col-sm-1 control-label no-padding-right">Tổng
+                                        cộng</label>
+                                    <div class="col-sm-3">
+                                        <input id="total-cost" type="number"
+                                               class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-7 hr hr-double"></div>
+                                </div>
+                                <div class="clearfix form-actions">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button class="btn btn-sm btn-success" type="submit" id="btn-add">
+                                            <i class="ace-icon fa fa-check bigger-110"></i>
+                                            Thêm
+                                        </button>
+                                        <button class="btn btn-sm" type="button" id="btn-go-back"
+                                                onclick="warningBeforeCancel()">
+                                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                                            Trở về
+                                        </button>
+                                        <input type="hidden" name="ref" th:if="${ref}" th:value="${ref}"
+                                               id="cancel-link"/>
+                                    </div>
+                                </div>
+                            </th:block>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/fragments-admin :: admin_footer}"></div>
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+</div>
+<th:block th:replace="~{fragments/fragments-admin :: admin_script}"></th:block>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    $(document).on('ready', function () {
+        $("body").on('input', 'input[name=adultQuantity],input[name=childQuantity],input[name=infantQuantity], .input-price-extra-service', function () {
+            updateAmount();
+        });
+    })
+
+    var adultPrice = [[${trip.adultPrice}]];
+    var childPrice = [[${trip.childPrice}]];
+    var infantPrice = [[${trip.infantPrice}]]
+
+    function updateAmount() {
+        var adult = $('#adult-quantity').val();
+        $('#adult-cost').val(adult * adultPrice);
+        var child = $('#child-quantity').val();
+        $('#child-cost').val(child * childPrice);
+        var infant = $('#infant-quantity').val();
+        $('#infant-cost').val(infant * childPrice);
+
+        var cost = adult * adultPrice + child * childPrice + infant * infantPrice + updateExtraServices();
+        $('#total-cost').val(cost);
+    }
+
+    function updateExtraServices() {
+        var showExtra = false;
+        var priceExtra = 0;
+        $('.input-price-extra-service').each(function (idx) {
+            var value = parseInt($(this).val());
+            if (value > 0) {
+                showExtra = true;
+                priceExtra += value * parseInt($(this).attr('data-price'));
+            }
+            $('#extra-service-cost-' + idx).val(value * parseInt($(this).attr('data-price')));
+        });
+        return priceExtra;
+    }
+
+    function warningBeforeCancel() {
+        swal({
+            title: "Xác nhận",
+            text: "Bạn có chắc muốn hủy bỏ thao tác này không?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-success",
+            cancelButtonClass: "btn-danger",
+            confirmButtonText: "Xác nhận",
+            cancelButtonText: "Hủy",
+        }).then((isConfirm) => {
+            if (isConfirm.dismiss) {
+            } else {
+                window.location.href = $('#cancel-link').val();
+            }
+        })
+    }
+
+    var allTours = JSON.parse([[${allTours.toString()}]]);
+
+    $('#tour-select').magicsearch({
+        dataSource: allTours,
+        fields: ['name'],
+        id: 'id',
+        format: '%name%',
+        multiple: false,
+        focusShow: true,
+        hidden: true,
+        multiField: 'name',
+        noResult: 'Không tìm thấy kết quả',
+        dropdownBtn: true,
+        multiStyle: {
+            space: 5,
+            width: 200
+        },
+        success: function () {
+            $(':input[name="tripId"]').val("");
+            $("#search-form").submit();
+        },
+        afterDelete: function () {
+            $(':input[name="tripId"]').val("");
+            $("#search-form").submit();
+        }
+    });
+
+    var allTrips = JSON.parse([[${allTrips.toString()}]]);
+
+    $('#trip-select').magicsearch({
+        dataSource: allTrips,
+        fields: ['code', 'date'],
+        id: 'id',
+        format: '%code% · %date%',
+        multiple: false,
+        focusShow: true,
+        hidden: true,
+        multiField: 'code',
+        noResult: 'Không tìm thấy kết quả',
+        dropdownBtn: true,
+        multiStyle: {
+            space: 5,
+            width: 200
+        },
+        success: function () {
+            $("#search-form").submit();
+        },
+        afterDelete: function () {
+            $("#search-form").submit();
+        }
+    });
+
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head th:replace="~{fragments/fragments-web :: web_head}"></head>
+<body class="changeHeader">
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <section class="pageTitle"
+             style="background-image:url(https://res.cloudinary.com/jstit/image/upload/v1622022625/9tour/background/B%E1%BA%A3n_sao_c%E1%BB%A7a_Kh%C3%B4ng_c%C3%B3_ti%C3%AAu_%C4%91%E1%BB%81_mvezcx.png);">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="titleTable">
+                        <div class="titleTableInner">
+                            <div class="pageTitleInfo">
+                                <h1>Trang thành viên</h1>
+                                <div class="under-border"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="mainContentSection">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="media blogPostListItem" style="overflow: hidden">
+                        <div class="media-body">
+                            <a th:href="@{/trang-chu}">Trang chủ</a> / <a href="">Lịch sử tour</a> / <a href="">Yêu cầu
+                            hủy tour</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="profile-sider">
+                        <div class="profile-usermenu">
+                            <style>
+                                .nav .active {
+                                    background-color: #D0D0D0;
+                                    color: #1e94f2;
+                                    border-left: 2px solid;
+                                }
+
+                                .profile-sidebar .nav > li:hover {
+                                    background-color: #D0D0D0;
+                                    color: #1e94f2;
+                                    border-left: 2px solid;
+                                }
+
+                                .profile-sidebar .nav > li a:hover {
+                                    color: #1e94f2;
+                                }
+                            </style>
+                            <ul class="nav infor-user" style="background: #f6f6f3;">
+                                <li class="">
+                                    <a th:href="@{/tai-khoan/thong-tin}">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="glyphicon glyphicon-home"></i>
+                                        &nbsp;Thông tin chung
+                                    </a>
+                                </li>
+                                <li class="active">
+                                    <a th:href="@{/tai-khoan/lich-su-dat-tour}">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="fa fa-history"></i>
+                                        &nbsp;Lịch sử đặt tour
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="fa fa-gift"></i>
+                                        &nbsp;Đổi quà
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="glyphicon glyphicon-flag"></i>
+                                        &nbsp;Lịch sử đổi quà
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="fa fa-upload"></i>
+                                        &nbsp;Lịch sử nâng hạng
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="glyphicon glyphicon-flag"></i>
+                                        &nbsp;Lịch sử điểm
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="fa fa-user"></i>
+                                        &nbsp;Nhóm thành viên
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9 col-sm-12 col-xs-12">
+                    <div class="col-md-12 col-sm-12 col-xs-12 text-center mg-bot20">
+                        <h3>Yêu cầu hủy tour</h3>
+                    </div>
+                    <form method="post" th:action="@{/tai-khoan/huy-tour}" th:object="${refund}" id="refund-form"
+                          class="has-validation-callback">
+                        <div class="form-content">
+                            <div class="col-md-12 col-xs-12">
+                                <div class="form-group label-top">
+                                    <input type="email" class="label-top" required="required"
+                                           data-validation="required email" th:field="*{contactMail}"
+                                           id="contactMail" onkeyup="checkNull();"/>
+                                    <label>Địa chỉ email (*)</label>
+                                </div>
+                                <div class="form-group label-top">
+                                    <input type="text" class="label-top" required="required" data-validation="required"
+                                           th:field="*{contactPhone}"
+                                           id="contactPhone" onkeyup="checkNull();"/>
+                                    <label>SĐT liên hệ (*)</label>
+                                </div>
+                                <div class="form-group label-top">
+                                    <input class="label-top" required="required" th:field="*{request}"/>
+                                    <label>Lý do hủy tour(*)</label>
+                                </div>
+                                <input type="hidden" th:value="${billId}" name="billId">
+                            </div>
+                        </div>
+                        <div class="form-footer">
+                            <div class="row gap-10">
+                                <div class="col-xs-6 col-sm-6 mbot-10">
+                                    <button id="button_register" type="submit" class="btn btn-primary btn-block submit">
+                                        Gửi yêu cầu
+                                    </button>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 mbot-10">
+                                    <a type="submit" class="btn btn-danger btn-block" data-dismiss="modal"
+                                       th:href="@{/tai-khoan/lich-su-dat-tour}">Hủy
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</section>
+<footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<link href="https://pay.vnpay.vn/lib/vnpay/vnpay.css" rel="stylesheet"/>
+<script src="https://pay.vnpay.vn/lib/vnpay/vnpay.min.js"></script>
+<script type="text/javascript">
+    $("#info-form").submit(function () {
+        var postData = $("#info-form").serialize();
+        var submitUrl = $("#info-form").attr("action");
+        $.ajax({
+            type: "POST",
+            url: submitUrl,
+            data: postData,
+            dataType: 'JSON',
+            success: function (x) {
+                if (x.code === '00') {
+                    if (window.vnpay) {
+                        vnpay.open({width: 768, height: 600, url: x.data});
+                    } else {
+                        location.href = x.data;
+                    }
+                    return false;
+                } else {
+                    alert(x.Message);
+                }
+            }
+        });
+        return false;
+    });
+</script>
+<script>
+    function notify(message, key) {
+        $.notify(message, {
+            delay: 5000,
+            type: key || 'danger',
+            icon: 'glyphicon glyphicon-warning-sign',
+            offset: {x: 30, y: 80},
+            placement: {from: 'top', 'align': 'right'},
+            mouse_over: 'pause'
+        });
+    }
+</script>
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+</body>
+</html>

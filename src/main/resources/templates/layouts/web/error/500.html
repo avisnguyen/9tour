@@ -1,0 +1,34 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="~{fragments/fragments-web :: web_head}"></head>
+<body class="changeHeader">
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <div class="member-wrapper"
+    >
+        <div class="background"></div>
+        <div class="member-content">
+            <div class="login clearfix">
+                <div class="text-center title">
+                    <h1>500</h1>
+                    <h5>Internal Server Error</h5>
+                </div>
+                <div class="col-md-12 col-xs-12">
+                    <p class="text-center">Máy chủ không phản hồi</p>
+                    <p class="text-center">Vui lòng kiểm tra lại hoặc thử lại sau</p><br/>
+                    <a type="submit" class="btn btn-success btn-block"
+                       th:href="@{/trang-chu}" data-dismiss="modal">Trở về trang chủ
+                    </a>
+                    <a sec:authorize="hasAnyAuthority('ADMIN','SUPER_ADMIN')" type="submit"
+                       class="btn btn-warning btn-block"
+                       th:href="@{/admin/trang-chu}" data-dismiss="modal">Về trang quản trị
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+</body>
+</html>

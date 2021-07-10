@@ -1,0 +1,174 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head th:replace="~{fragments/fragments-web :: web_head}"></head>
+<body class="changeHeader">
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <section class="pageTitle"
+             style="background-image:url(https://res.cloudinary.com/jstit/image/upload/v1622022625/9tour/background/B%E1%BA%A3n_sao_c%E1%BB%A7a_Kh%C3%B4ng_c%C3%B3_ti%C3%AAu_%C4%91%E1%BB%81_mvezcx.png);">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="titleTable">
+                        <div class="titleTableInner">
+                            <div class="pageTitleInfo">
+                                <h1>Trang thành viên</h1>
+                                <div class="under-border"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="mainContentSection">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="media blogPostListItem" style="overflow: hidden">
+                        <div class="media-body">
+                            <a th:href="@{/trang-chu}">Trang chủ</a> / <a href="">Lịch sử tour</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="profile-sider">
+                        <div class="profile-usermenu">
+                            <style>
+                                .nav .active {
+                                    background-color: #D0D0D0;
+                                    color: #1e94f2;
+                                    border-left: 2px solid;
+                                }
+
+                                .profile-sidebar .nav > li:hover {
+                                    background-color: #D0D0D0;
+                                    color: #1e94f2;
+                                    border-left: 2px solid;
+                                }
+
+                                .profile-sidebar .nav > li a:hover {
+                                    color: #1e94f2;
+                                }
+                            </style>
+                            <ul class="nav infor-user" style="background: #f6f6f3;">
+                                <li class="">
+                                    <a th:href="@{/tai-khoan/thong-tin}">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="glyphicon glyphicon-home"></i>
+                                        &nbsp;Thông tin chung
+                                    </a>
+                                </li>
+                                <li class="active">
+                                    <a th:href="@{/tai-khoan/lich-su-dat-tour}">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="fa fa-history"></i>
+                                        &nbsp;Lịch sử đặt tour
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="javascript:void(0)">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="fa fa-gift"></i>
+                                        &nbsp;Đổi quà
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="javascript:void(0)">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="glyphicon glyphicon-flag"></i>
+                                        &nbsp;Lịch sử đổi quà
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="javascript:void(0)">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="fa fa-upload"></i>
+                                        &nbsp;Lịch sử nâng hạng
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="javascript:void(0)">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="glyphicon glyphicon-flag"></i>
+                                        &nbsp;Lịch sử điểm
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="javascript:void(0)">
+                                        <i style="color:#6f6f6f; font-size: 12px;" class="fa fa-user"></i>
+                                        &nbsp;Nhóm thành viên
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9 col-sm-12 col-xs-12">
+                    <div th:if="${message}" th:class="|alert ${message.get('alert')}|">
+                        <button type="button" class="close" data-dismiss="alert">
+                            <i class="ace-icon fa fa-times"></i>
+                        </button>
+                        <b th:text="${message.get('msg')}"></b>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12 text-center mg-bot20">
+                        <h3>Lịch sử đặt tour</h3>
+                    </div>
+                    <!--                    <table class="table table-bordered table-hover table-responsive">-->
+                    <table class="table table-bordered text-center no-footer dtr-inline table-hover" width="100%"
+                           role="grid">
+                        <thead style="background: linear-gradient(to right, #5a5a5a , #6b8595);color: #fff;">
+                        <tr role="row">
+                            <th>#</th>
+                            <th>Tour code</th>
+                            <th>Tên tour</th>
+                            <th>Ngày khởi hành</th>
+                            <th>Ngày về</th>
+                            <th>Điểm đi</th>
+                            <th>Điểm đến</th>
+                            <th>Tổng tiền</th>
+                            <th>Phương tiện</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${!bills.isEmpty()}" th:each="bill, i : ${bills}">
+                            <td th:text="${i.count}"></td>
+                            <td th:text="${bill.getTripResponseModel.code}"></td>
+                            <td th:text="${bill.getTripResponseModel.getTourResponseModel.name}"></td>
+                            <td th:text="${#dates.format(bill.getTripResponseModel.departureTime, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                            <td th:text="${#dates.format(bill.getTripResponseModel.returnTime, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                            <td th:text="${bill.getTripResponseModel.getTourResponseModel.getDepartureModel.name}"></td>
+                            <td th:text="${bill.getTripResponseModel.getTourResponseModel.getDestinationModel.name}"></td>
+                            <td th:text="${#numbers.formatInteger(bill.totalPrice, 3, 'POINT')}"></td>
+                            <td th:text="${bill.getTripResponseModel.getTourResponseModel.transport}"></td>
+                            <td style="color: #0f4bac" th:text="${bill.getStatus()}"></td>
+                            <td>
+                                <th:block th:if="${bill.getStatus() == 'Chưa khởi hành'}">
+                                    <a class="btn" title="Yêu cầu hủy tour"
+                                       th:href="@{/tai-khoan/yeu-cau-huy-tour(billId= ${bill.getId()})}">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </a>
+                                </th:block>
+                                <th:block
+                                        th:if="${bill.getStatus() == 'Chưa thanh toán'  && bill.tripResponseModel.departureTime > now }">
+                                    <a class="btn" title="Thanh toán"
+                                       th:href="@{/tai-khoan/thanh-toan(billId= ${bill.getId()})}">
+                                        <i class="fa fa-money" aria-hidden="true"></i>
+                                    </a>
+                                </th:block>
+                            </td>
+                        </tr>
+                        <tr th:if="${bills.isEmpty()}">
+                            Chưa có lịch sử đi tour
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</section>
+<footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+</body>
+</html>

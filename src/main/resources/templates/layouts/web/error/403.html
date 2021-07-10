@@ -1,0 +1,29 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-web :: web_head}"></head>
+<body class="changeHeader">
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <div class="member-wrapper"
+    >
+        <div class="background"></div>
+        <div class="member-content">
+            <div class="login clearfix">
+                <div class="text-center title">
+                    <h2>403</h2>
+                    <h5>Truy cập bị từ chối</h5>
+                </div>
+                <div class="col-md-12 col-xs-12">
+                    <p class="text-center">Bạn không được phép truy cập, vui lòng quay trở lại</p><br/>
+                    <a type="submit" class="btn btn-success btn-block"
+                       th:href="@{/trang-chu}" data-dismiss="modal">Trở về trang chủ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="~{fragments/fragments-web :: web_head}"></head>
+<body class="changeHeader">
+</div>
+<div class="modal fade modal-login modal-border-transparent" id="loginModal" tabindex="-1" role="dialog"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="btn btn-close close" data-dismiss="modal" aria-label="Close">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+            <div class="clear"></div>
+            <div id="modal-login-form-wrapper">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <section>
+        <div class="pageTitle page-image-tour-tag"
+             style="background-image:url(https://res.cloudinary.com/jstit/image/upload/v1621256527/9tour/background/booking_j79llf.jpg)">
+        </div>
+    </section>
+    <section>
+        <div class="container" style="position: relative">
+            <div class="background-description">
+                <h1 class="tour-banner-title">Đặt tour</h1>
+            </div>
+        </div>
+    </section>
+    <!-- PAGE CONTENT -->
+    <section class="mainContentSection booking-container">
+        <div class="container">
+            <div class="row progress-wizard" style="border-bottom:0;">
+                <div class="col-sm-3 col-xs-12 progress-wizard-step complete ">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">1</span>. Chọn dịch vụ
+                    </a>
+                </div>
+                <div class="col-sm-3 col-xs-12 progress-wizard-step active">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">2</span>. Nhập thông tin
+                    </a>
+                </div>
+                <div class="col-sm-3 col-xs-12 progress-wizard-step  disabled">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">3</span>. Thanh toán
+                    </a>
+                </div>
+                <div class="col-sm-3 col-xs-12 progress-wizard-step  disabled">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">4</span>. Kết quả
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 col-sm-12 col-xs-12">
+                    <div class="payment-wrap bookingForm">
+                        <form th:action="@{/tour/booking/process/passengers(sessionId = ${#session.getId()})}"
+                              role="form" method="post" class="form" id="info-form"
+                              novalidate="" modelAttribute="bookingModel">
+                            <div class="no-padding">
+                                <div class="title">
+                                    <h3>THÔNG TIN LIÊN HỆ</h3>
+                                </div>
+                                <th:block sec:authorize="isAuthenticated()">
+                                    <div class="row">
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>First Name (*)</label>
+                                                <input type="text"
+                                                       th:value="${#authentication.getPrincipal().getFirstName()}"
+                                                       name="firstName"
+                                                       class="form-control input-required" required="required"
+                                                       data-validation="required"/>
+                                                <span class="error"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Last Name (*)</label>
+                                                <input type="text"
+                                                       th:value="${#authentication.getPrincipal().getLastName()}"
+                                                       name="lastName"
+                                                       class="form-control input-required" required="required"
+                                                       data-validation="required"/>
+                                                <span class="error"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Số điện thoại (*)</label>
+                                                <input type="text"
+                                                       th:value="${#authentication.getPrincipal().getPhone()}"
+                                                       name="phone"
+                                                       class="form-control input-required" required="required"
+                                                       pattern="^(\d{8,})$"
+                                                       maxlength="15" data-validation="required custom length"
+                                                       data-validation-regexp="^(\d{8,})$"
+                                                       data-validation-length="max15"/>
+                                                <span class="error"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Email (*)</label>
+                                                <input type="email"
+                                                       th:value="${#authentication.getPrincipal().getEmail()}"
+                                                       name="email"
+                                                       class="form-control input-required" required="required"
+                                                       data-validation="required email"/>
+                                                <span class="error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Địa chỉ </label>
+                                                <input type="text"
+                                                       th:value="${#authentication.getPrincipal().getAddress()}"
+                                                       name="address"
+                                                       class="form-control"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Quốc gia</label>
+                                                <input type="text"
+                                                       th:value="${#authentication.getPrincipal().getNationality()}"
+                                                       name="nationality"
+                                                       class="form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" th:value="${#authentication.getPrincipal().getId()}"
+                                           name="userId"/>
+                                </th:block>
+                                <!--                                    <form:input path="userId" type="hidden" value="<%= SecurityUtils.getPrincipal().getId()%>"/>-->
+                                <th:block sec:authorize="isAnonymous()">
+                                    <div class="row">
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Tên (*)</label>
+                                                <input type="text"
+                                                       th:field="${booking.firstName}"
+                                                       class="form-control input-required" required="required"
+                                                       data-validation="required">
+                                                <span class="error"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Họ (*)</label>
+                                                <input type="text"
+                                                       th:field="${booking.lastName}"
+                                                       class="form-control input-required" required="required"
+                                                       data-validation="required">
+                                                <span class="error"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Số điện thoại (*)</label>
+                                                <input type="number"
+                                                       th:field="${booking.phone}"
+                                                       class="form-control input-required" required="required"
+                                                       pattern="^(\d{10,})$"
+                                                       maxlength="11" data-validation="required custom length"
+                                                       data-validation-regexp="^(\d{10,})$"
+                                                       data-validation-length="max11">
+                                                <span class="error"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Email (*)</label>
+                                                <input type="email"
+                                                       th:field="${booking.email}"
+                                                       class="form-control input-required" required="required"
+                                                       data-validation="required email">
+                                                <span class="error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Địa chỉ </label>
+                                                <input type="text"
+                                                       th:field="${booking.address}"
+                                                       class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Quốc gia</label>
+                                                <input type="text"
+                                                       th:field="${booking.nationality}"
+                                                       class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </div>
+                            <th:block th:if="${booking.totalPassenger > 0 && booking.totalPassenger != null}">
+                                <th:block th:each="i : ${#numbers.sequence(0, booking.totalPassenger - 1)}">
+                                    <div class="no-padding">
+                                        <h3 style="margin-bottom: 10px">Thông tin hành khách # [[${i + 1}]]</h3>
+                                        <div class="row">
+                                            <div class="form-group col-sm-6 col-xs-12">
+                                                <div class="form-group">
+                                                    <label>Tên đệm và tên (*)</label>
+                                                    <input type="text"
+                                                           th:field="${booking.passengers[__${i}__].firstName}"
+                                                           class="form-control input-required" required="required"
+                                                           data-validation="required">
+                                                    <span class="error"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-sm-6 col-xs-12">
+                                                <div class="form-group">
+                                                    <label>Họ (*)</label>
+                                                    <input type="text"
+                                                           th:field="${booking.passengers[__${i}__].lastName}"
+                                                           class="form-control input-required" required="required"
+                                                           data-validation="required">
+                                                    <span class="error"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-6 col-xs-12">
+                                                <div class="form-group">
+                                                    <label>Giới tính</label>
+                                                    <div class="bookingDrop">
+                                                        <select th:field="${booking.passengers[__${i}__].sex}"
+                                                                class="form-control select-drop" style="display: none;">
+                                                            <option value="Nam" selected="selected">Nam</option>
+                                                            <option value="Nữ">Nữ</option>
+                                                        </select>
+                                                    </div>
+                                                    <span class="error"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-sm-6 col-xs-12">
+                                                <div class="form-group">
+                                                    <label>Số điện thoại</label>
+                                                    <input type="number"
+                                                           th:field="${booking.passengers[__${i}__].phone}"
+                                                           placeholder=""
+                                                           class="form-control" pattern="^(\d{10,})$"
+                                                           data-validation="custom length"
+                                                           data-validation-regexp="^(\d{10,})$"
+                                                           data-validation-optional="true" maxlength="11"
+                                                           data-validation-length="max11">
+                                                    <span class="error"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-6 col-xs-12">
+                                                <div class="form-group">
+                                                    <label>Ngày sinh (*)</label>
+                                                    <input type="date"
+                                                           th:field="${booking.passengers[__${i}__].birthday}"
+                                                           class="form-control date-picker" required="required"
+                                                           data-validation="required">
+                                                    <span class="error"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-sm-6 col-xs-12">
+                                                <div class="form-group">
+                                                    <label>Quốc tịch</label>
+                                                    <input type="text"
+                                                           th:field="${booking.passengers[__${i}__].nationality}"
+                                                           class="form-control">
+                                                    <span class="error"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </th:block>
+                            <div class="col-xs-12">
+                                <div class="buttonArea galleryBtnArea">
+                                    <ul class="list-inline">
+                                        <li>
+                                            <a th:href="@{/tour/booking/{id}/pax-no(id = ${booking.tripId})}"
+                                               class="btn buttonTransparent">Trở về</a>
+                                        </li>
+                                        <li class="pull-right">
+                                            <button type="submit" data-callback="validate" id="submit-button"
+                                                    class="btn buttonTransparent">Tiếp tục
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                document.getElementById('submit-button').onclick = ev => {
+                                    ev.preventDefault();
+                                    // $('.input-required').each(function (idx) {
+                                    //     var value = $(this).val();
+                                    //     console.log(value.length, value.size);
+                                    //     if (value === '' || value === undefined || value === null) {
+                                    //         notify('Vui lòng nhập đầy đủ thông tin');
+                                    //         return;
+                                    //     }
+                                    //     var i = document.getElementsByClassName("help-block error");
+                                    //     if(i.length === 0) document.getElementById('info-form').submit();
+                                    // })
+                                    if ($("input[name=firstName]").val() === '' || $("input[name=lastName]").val() === '' || $("input[name=email]").val() === '' ||
+                                        $("input[name=phone]").val() === '') {
+                                        notify('Vui lòng nhập đủ thông tin');
+                                        return;
+                                    }
+                                    var i = document.getElementsByClassName("help-block error");
+                                    if (i.length === 0) document.getElementById('info-form').submit();
+                                }
+                                $.validate({modules: 'html5', errorMessageClass: 'error', lang: 'vi'});
+                            </script>
+                            <input type="hidden" th:value="${booking.tripId}" name="tripId"/>
+                            <input type="hidden" th:value="${booking.adultPrice}" name="adultPrice"/>
+                            <input type="hidden" th:value="${booking.childPrice}" name="childPrice"/>
+                            <input type="hidden" th:value="${booking.infantPrice}" name="infantPrice"/>
+                            <input type="hidden" th:value="${booking.adultQuantity}" name="adultQuantity"/>
+                            <input type="hidden" th:value="${booking.childQuantity}" name="childQuantity"/>
+                            <input type="hidden" th:value="${booking.infantQuantity}" name="infantQuantity"/>
+                            <input type="hidden" th:value="${booking.childQuantity}" name="childQuantity"/>
+                            <input type="hidden" th:value="${booking.totalExtraService}" name="totalExtraService"/>
+                            <input type="hidden" th:value="${booking.totalPassenger}" name="totalPassenger"/>
+                            <input type="hidden" th:value="${booking.totalPrice}" name="totalPrice"/>
+                            <input type="hidden" th:value="${trip.code}" name="codeOfTrip"/>
+                            <input type="hidden" th:value="${trip.getTourResponseModel.name}" name="tourName"/>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12 col-xs-12">
+                    <aside>
+                        <a style="display: block" class="infoTitle-kiritm" href="tel:1900 1808">
+                            <span>Hỗ trợ giao dịch <strong>1900 1900</strong></span>
+                        </a>
+                        <div class="bookDetailsInfo">
+                            <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                 th:src="${trip.getTourResponseModel.thumbnailUrl}" alt="image">
+                            <div class="infoArea">
+                                <h3><a target="_blank"
+                                       th:href="@{/tour/{id}/{slug}(id = ${trip.getTourResponseModel.id}, slug = ${trip.getTourResponseModel.slug})}">[[${trip.tourResponseModel.name}]]</a>
+                                </h3>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <i class="fa fa-barcode" aria-hidden="true"></i>
+                                        Code:
+                                        <span>[[${trip.code}]]</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-calendar-minus-o" aria-hidden="true"></i>
+                                        Ngày đi:
+                                        <span th:text="${#dates.format(trip.departureTime, 'dd-MM-yyyy')}"></span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
+                                        </i>Ngày về:
+                                        <span th:text="${#dates.format(trip.returnTime, 'dd-MM-yyyy')}"></span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                        </i>Thời gian:
+                                        <span>[[${trip.tourResponseModel.duringTime}]]</span>
+                                    </li>
+                                    <li th:if="${booking.adultQuantity > 0}">
+                                        <i class="fa fa-user-secret" aria-hidden="true"></i>
+                                        Giá Người lớn :
+                                        <span>
+                                            <strong th:text="${#numbers.formatInteger(trip.adultPrice,3,'POINT') + ' đ X ' + booking.adultQuantity}"></strong>
+                                        </span>
+                                        <span id="adult"></span></li>
+                                    <li th:if="${booking.childQuantity > 0}">
+                                        <i class="fa fa-child" aria-hidden="true"></i>
+                                        Giá trẻ em :
+                                        <span>
+                                            <strong th:text="${#numbers.formatInteger(trip.childPrice,3,'POINT') + ' đ X ' + booking.childQuantity}"></strong>
+                                        </span>
+                                        <span id="child"></span></li>
+                                    <li th:if="${booking.infantQuantity > 0}">
+                                        <i class="fa fa-user-times" aria-hidden="true"></i>
+                                        Giá em bé:
+                                        <span>
+                                            <strong th:text="${#numbers.formatInteger(trip.infantPrice,3,'POINT') + ' đ X ' + booking.infantQuantity}"></strong>
+                                        </span>
+                                        <span id="infant"></span>
+                                    </li>
+                                    <li th:if="${booking.totalExtraService > 0}">
+                                        <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                                        Dịch vụ cộng thêm:
+                                        <span>
+                                            <strong th:text="${#numbers.formatInteger(booking.totalExtraService,3,'POINT')} + ' đ'"></strong>
+                                        </span>
+                                        <span id="priceExtraServices"></span>
+                                    </li>
+                                    <li><i class="fa fa-usd" aria-hidden="true"></i>
+                                        <span><strong
+                                                style="font-size: 17px">Thanh toán bằng thẻ nội địa ATM</strong></span>
+                                    </li>
+                                </ul>
+                                <div class="priceTotal">
+                                    <h2>Tổng: <span
+                                            th:text="${#numbers.formatInteger(booking.totalPrice,3,'POINT')}"></span>
+                                        <span class="price-label"> đồng</span>
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+<script>
+    function notify(message, key) {
+        $.notify(message, {
+            delay: 5000,
+            type: key || 'danger',
+            icon: 'glyphicon glyphicon-warning-sign',
+            offset: {x: 30, y: 80},
+            placement: {from: 'top', 'align': 'right'},
+            mouse_over: 'pause'
+        });
+    }
+</script>
+</body>
+</html>

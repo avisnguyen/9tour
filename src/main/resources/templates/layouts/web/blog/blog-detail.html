@@ -1,0 +1,196 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-web :: web_head}"></head>
+<body class="changeHeader">
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <section>
+        <div class="pageTitle page-image-tour-tag"
+             th:style="'background-image: url(' + ${post.thumbnailUrl} + ')'">
+        </div>
+        <div class="container" style="position: relative">
+            <div class="background-description">
+                <h1 class="tour-banner-title" th:text="${post.title}"></h1>
+            </div>
+        </div>
+    </section>
+    <section class="mainContentSection singlePackage">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div role="tabpanel" class="countryTabs">
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active">
+                                <div class="row">
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div class="commonInfo">
+                                            <div>
+                                                <p style="margin-left: 22.5pt; text-align: justify;">
+                                                <ul>
+                                                    <li th:text="${'Tác giả: ' + author}"></li>
+                                                    <li th:text="${'Cập nhật lần cuối: ' + #dates.format(post.modifiedDate, 'dd/MM/yyyy')}"></li>
+                                                </ul>
+                                                </strong>
+                                                </p>
+                                                <blockquote>
+                                                    <p style="margin-left: 22.5pt; text-align: justify;">
+                                                        <strong th:text="${post.shortDescription}"></strong>
+                                                    </p>
+                                                </blockquote>
+                                                <p style="margin-left: 22.5pt; text-align: justify;"
+                                                   th:utext="${post.content}"></p>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div class="fb-comments" data-href="http://9tour.xyz" data-width="100%"
+                                             data-lazy="true" data-numposts="5">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12 hide-in-mobile">
+                                        <aside>
+                                            <div role="tabpanel" class="tabArea">
+                                                <!-- Nav tabs -->
+                                                <ul class="nav nav-tabs nav-justified" role="tablist">
+                                                    <li role="presentation" class="active">
+                                                        <a href="#new" aria-controls="new" role="tab" data-toggle="tab"
+                                                           aria-expanded="true">TIN MỚI</a>
+                                                    </li>
+                                                </ul>
+                                                <!-- Tab panes -->
+                                                <div class="tab-content">
+                                                    <div role="tabpanel" class="tab-pane active" id="new">
+                                                        <th:block th:each="post, state: ${newPost}"
+                                                                  th:if="${state.count < 6}">
+                                                            <div class="media ">
+                                                                <a class="media-left"
+                                                                   th:href="@{/blog/{id}/{slug}(id = ${post.id}, slug = ${post.slug})}">
+                                                                    <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                                                         class="media-object" style="border-radius: 4px"
+                                                                         width="70px" th:src="${post.thumbnailUrl}"
+                                                                         alt="Image">
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <h4>
+                                                                        <a th:href="@{/blog/{id}/{slug}(id = ${post.id}, slug = ${post.slug})}"
+                                                                           class="media-heading"
+                                                                           th:text="${post.title}">
+                                                                        </a>
+                                                                    </h4>
+                                                                    <p>
+                                                                        <i class="fa fa-calendar"
+                                                                           aria-hidden="true"></i>
+                                                                        <th:block
+                                                                                th:text="${#dates.format(post.modifiedDate, 'dd-MM-yyyy')}">
+                                                                        </th:block>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </th:block>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </aside>
+                                        <div class="fb-page"
+                                             data-href="https://www.facebook.com/9Tour-D%E1%BB%8Bch-v%E1%BB%A5-l%E1%BB%AF-h%C3%A0nh-110131267920896"
+                                             data-tabs="" data-width="270" data-height="" data-small-header="false"
+                                             data-adapt-container-width="true" data-hide-cover="false"
+                                             data-show-facepile="false">
+                                            <blockquote
+                                                    cite="https://www.facebook.com/9Tour-D%E1%BB%8Bch-v%E1%BB%A5-l%E1%BB%AF-h%C3%A0nh-110131267920896"
+                                                    class="fb-xfbml-parse-ignore">
+                                                <a href="https://www.facebook.com/9Tour-D%E1%BB%8Bch-v%E1%BB%A5-l%E1%BB%AF-h%C3%A0nh-110131267920896">
+                                                    9Tour - Dịch vụ lữ hành
+                                                </a>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--            <div class="row">-->
+            <!--                <div class="col-xs-12">-->
+            <!--                    <div class="relatedProduct">-->
+            <!--                        <h2>Tin mới</h2>-->
+            <!--                        <div class="row">-->
+            <!--                            <th:block th:each="post, state: ${newPost}" th:if="${state.count < 4}">-->
+            <!--                                <div class="col-sm-4 col-xs-12">-->
+            <!--                                    <div class="relatedItem image-box-relative image-box-3x2 image-box-center">-->
+            <!--                                        <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|" style="border-radius: 5px"-->
+            <!--                                             th:src="${post.thumbnailUrl}"-->
+            <!--                                             width="360" alt="related image">-->
+            <!--                                        <div class="maskingInfo">-->
+            <!--                                            <h4 th:text="${post.title}"></h4>-->
+            <!--                                            <a th:href="@{/blog/{id}/{slug}(id = ${post.id}, slug = ${post.slug})}"-->
+            <!--                                               class="btn buttonTransparent">Xem thêm</a>-->
+            <!--                                        </div>-->
+            <!--                                    </div>-->
+            <!--                                </div>-->
+            <!--                            </th:block>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <br/>
+            <br/>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="relatedProduct">
+                        <h2>Category: <u th:text="${post.getCategoryResponseModel.name}">${post.category.name}</u></h2>
+                        <div class="row">
+                            <th:block th:each="item, state: ${postOfCategory}" th:if="${state.count < 5}">
+                                <th:block th:if="${item.id != post.id}">
+                                    <div class="col-sm-4 col-xs-12">
+                                        <div class="relatedItem image-box-relative image-box-3x2 image-box-center">
+                                            <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                                 style="border-radius: 5px"
+                                                 th:src="${item.thumbnailUrl}"
+                                                 width="360" alt="related image">
+                                            <div class="maskingInfo">
+                                                <h4 th:text="${item.title}"></h4>
+                                                <a th:href="@{/blog/{id}/{slug}(id = ${item.id}, slug = ${item.slug})}"
+                                                   class="btn buttonTransparent">Xem thêm</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous"
+        src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v10.0&appId=878457402703014&autoLogAppEvents=1"
+        nonce="RoTT0GUU">
+</script>
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+<script>
+    window.fbAsyncInit = function () {
+        FB.init({
+            appId: '878457402703014',
+            xfbml: true,
+            version: 'v10.0'
+        });
+        FB.AppEvents.logPageView();
+    };
+
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {
+            return;
+        }
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
+</body>
+</html>

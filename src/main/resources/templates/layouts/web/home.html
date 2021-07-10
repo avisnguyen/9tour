@@ -1,0 +1,439 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-web :: web_head}">
+    <title>Trang chủ</title>
+</head>
+<body class="changeHeader">
+</div>
+<div class="modal fade modal-login modal-border-transparent" id="loginModal" tabindex="-1" role="dialog"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="btn btn-close close" data-dismiss="modal" aria-label="Close">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+            <div class="clear"></div>
+            <div id="modal-login-form-wrapper">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <section class="bannercontainer">
+        <div class="fullscreenbanner-container">
+            <div class="fullscreenbanner">
+                <ul>
+                    <li data-transition="parallaxvertical" data-slotamount="5" data-masterspeed="700"
+                        data-title="Slide 0">
+                        <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                             src="https://res.cloudinary.com/jstit/image/upload/c_scale,h_480,w_1520/v1622298733/9tour/slide/slide1_zpmf1w.png"
+                             alt="slidebg0"
+                             data-bgfit="cover" style="min-height: 250px" data-bgposition="center center"
+                             data-bgrepeat="no-repeat">
+                        <div class="slider-caption container">
+                            <div class="tp-caption rs-caption-1 sft start" data-hoffset="0" data-x="150" data-y="170"
+                                 data-speed="800" data-start="1000" data-easing="Back.easeInOut" data-endspeed="300">
+                                9Tour
+                                <span> Travel Advisory Update</span>
+                            </div>
+                            <!--                            <div class="tp-caption rs-caption-2 sft" data-hoffset="0" data-x="150" data-y="300"-->
+                            <!--                                 data-speed="1000" data-start="1500" data-easing="Power4.easeOut" data-endspeed="300"-->
+                            <!--                                 data-endeasing="Power1.easeIn" data-captionhidden="off">-->
+                            <!--                            </div>-->
+                        </div>
+                    </li>
+                    <li data-transition="parallaxvertical" data-slotamount="5" data-masterspeed="1000"
+                        data-title="Slide 1">
+                        <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                             src="https://res.cloudinary.com/jstit/image/upload/c_scale,h_480,w_1520/v1622299010/9tour/slide/slide2_k30bri.jpg"
+                             alt="slidebg1"
+                             data-bgfit="cover" style="min-height: 250px" data-bgposition="center center"
+                             data-bgrepeat="no-repeat">
+                        <div class="slider-caption container">
+                            <div class="tp-caption rs-caption-1 sft start" data-hoffset="0" data-x="150" data-y="170"
+                                 data-speed="800" data-start="1000" data-easing="Back.easeInOut" data-endspeed="300">
+                                Cùng 9Tour
+                                <span> Khám phá tour du lịch Hè</span>
+                            </div>
+                            <!--                            <div class="tp-caption rs-caption-2 sft" data-hoffset="0" data-x="150" data-y="300"-->
+                            <!--                                 data-speed="1000" data-start="1500" data-easing="Power4.easeOut" data-endspeed="300"-->
+                            <!--                                 data-endeasing="Power1.easeIn" data-captionhidden="off">-->
+                            <!--                                2021-->
+                            <!--                            </div>-->
+                        </div>
+                    </li>
+                    <li data-transition="parallaxvertical" data-slotamount="5" data-masterspeed="700"
+                        data-title="Slide 2">
+                        <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                             src="https://res.cloudinary.com/jstit/image/upload/c_scale,h_480,w_1520/v1622300738/9tour/slide/plan_20your_20trip_20vietnam_20tourism_zw77yq.jpg"
+                             alt="slidebg2"
+                             data-bgfit="cover" style="min-height: 250px" data-bgposition="center center"
+                             data-bgrepeat="no-repeat">
+                        <div class="slider-caption container">
+                            <div class="tp-caption rs-caption-1 sft start" data-hoffset="0" data-x="150" data-y="170"
+                                 data-speed="800" data-start="1000" data-easing="Back.easeInOut" data-endspeed="300">
+                                9Tour chuyên cung cấp
+                                <span> Tour du lịch trong nước</span>
+                            </div>
+                            <div class="tp-caption rs-caption-2 sft" data-hoffset="0" data-x="150" data-y="300"
+                                 data-speed="1000" data-start="1500" data-easing="Power4.easeOut" data-endspeed="300"
+                                 data-endeasing="Power1.easeIn" data-captionhidden="off">
+                                đa dạng, giá cả hợp lý
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <section class="search-wrapper-kiritm">
+        <div class="container">
+            <form id="searchFormKiritm" method="get" role="form" th:action="@{/tour/search}">
+                <div class="search-body-kiritm">
+                    <div class="row ">
+                        <div class="col-sm-offset-2 col-sm-8 col-xs-12 serch-box-kiritm">
+                            <div class="serch-box-kiritm-content" id="searchboxkiritm">
+                                <input onkeyup="return showResult(event, this.value)"
+                                       onkeypress="return checkSubmitSearch(event)" type="text" name="keyword"
+                                       class="input-search-kiritm" id="inputSearchHomepage" autocomplete="off"
+                                       placeholder="Tìm kiếm..." aria-describedby="basic-addon2">
+                                <i class="fa fa-search fa-kiritm" id="basic-addon2"
+                                   onclick="javascript:$(this).parents('form').submit()"></i>
+                            </div>
+                            <div id="showSuggestion" class="suggestions hidden-cls">
+                                <ul id="suggestionSearchHomePage" class="ul-suggestion">
+                                </ul>
+                            </div>
+                            <div class="advance-search-kiritm hidden-cls" id="advanceSearchKiritm">
+                                <div class="arrow-advance"></div>
+                                <div class="col-xs-6">
+                                    <div id="fromDateSearchBox" class="input-group date filterDate ed-datepicker">
+                                        <input type="text" class="form-control " name="from" autocomplete="off"
+                                               placeholder="Từ ngày (DD/MM/YYYY)" value="">
+                                        <div class="input-group-addon">
+                                            <span class="fa fa-calendar"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div id="toDateSearchBox" class="input-group date ed-datepicker filterDate">
+                                        <input type="text" class="form-control" name="to" autocomplete="off"
+                                               placeholder="Đến ngày (DD/MM/YYYY)" value="">
+                                        <div class="input-group-addon">
+                                            <span class="fa fa-calendar"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mark-close hidden-cls" id="markclose"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--                <input type="hidden" value="1" id="page" name="page"/>-->
+                <!--                <input type="hidden" value="6" id="limit" name="limit"/>-->
+            </form>
+        </div>
+    </section>
+    <div class="main-wrapper">
+        <section class="whiteSection">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="sectionTitle">
+                            <div class="content-title">
+                                <span class="title-tour-new">TOUR HAY
+                                <i class="fa fa-star-o" style="color: red"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="slider-slick slider" style="height: auto">
+                        <th:block th:each="tour, state: ${tours.results}" th:if="${state.count < 11}">
+                            <article class="box isotopeSelector box-kiritm box-tour">
+                                <figure>
+                                    <a th:href="@{/tour/{id}/{slug}(id = ${tour.id}, slug = ${tour.slug})}"
+                                       class="GAproductClick popup-gallery image-box-relative image-box-3x2"
+                                       th:title="${tour.name}">
+                                        <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                             width="100%" height="250" alt=""
+                                             th:src="${tour.thumbnailUrl}">
+                                        <div class="promotion-tour">
+                                            <div class="text-promotion-tour">
+                                                Tour
+                                                <th:block th:each="place, iState: ${tour.placeResponseModels}">
+                                                    [[${place.name}]]
+                                                    <span th:if="${!iState.last}"> - </span>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </figure>
+                                <div class="box-tour-price">
+                                    <th:block th:if="${tour.tripResponseModel}">
+                                        <p class="text">Giá từ</p>
+                                        <p class="price"
+                                           th:text="${#numbers.formatInteger(tour.tripResponseModel.adultPrice,3,'POINT')}"></p>
+                                    </th:block>
+                                    <p class="info" th:text="${tour.duringTime}"></p>
+                                </div>
+                                <div class="details-kiritm">
+                                    <div class="name-tour-detail">
+                                        <a th:href="@{/tour/{id}/{slug}(id = ${tour.id}, slug = ${tour.slug})}"
+                                           class="GAproductClick" th:title="${tour.name}" th:text="${tour.name}"></a>
+                                    </div>
+                                    <div class="bottom-detail">
+                                        <div class="info-tour">
+                                        </div>
+                                        <div class="action-tour">
+                                            <a th:href="@{/tour/{id}/{slug}(id = ${tour.id}, slug = ${tour.slug})}"
+                                               th:title="${tour.name}"
+                                               class="GAproductClick btn btn-kiritm buy-tour">Mua tour</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- home-banner -->
+
+        <section class="home-banner-wrapper" style="margin-top: 30px">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-sm-8 col-xs-12" style="margin-bottom: 18px">
+                        <a href="javascript:void(0)"
+                           class="box-shadow adbanner-image image-box-relative image-box-16x9 ">
+                            <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                 src="https://res.cloudinary.com/jstit/image/upload/c_scale,h_434,w_770/v1622301260/9tour/banner/banner1_ropnxk.png">
+                            <div class="overlay"></div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <div class="row" style="margin-top: -10px">
+                            <div class="col-sm-12 col-xs-6" style="margin: 9px auto">
+                                <a href="javascript:void(0)"
+                                   class="box-shadow adbanner-image image-box-relative image-box-16x9 ">
+                                    <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                         src="https://res.cloudinary.com/jstit/image/upload/c_scale,h_209,w_370/v1622298182/9tour/banner/5K-web-01_tcr5ds.png">
+                                    <div class="overlay"></div>
+                                </a>
+                            </div>
+                            <div class="col-sm-12 col-xs-6" style="margin: 9px auto">
+                                <a href="javascript:void(0)"
+                                   class="box-shadow adbanner-image image-box-relative image-box-16x9 ">
+                                    <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                         src="https://res.cloudinary.com/jstit/image/upload/c_scale,h_209,w_370/v1622301465/9tour/banner/banner3_yaqrmr.png">
+                                    <div class="overlay"></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="whiteSection">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="sectionTitle">
+                            <div class="content-title">
+                                <span class="title">ĐIỂM ĐẾN ĐANG HOT
+                                    <i class="fa fa-thumbs-o-up" style="color:red;" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <th:block th:each="post, state: ${posts.results}" th:if="${state.count < 4}">
+                        <div class="col-sm-4 col-xs-12">
+                            <article class="box isotopeSelector box-kiritm">
+                                <figure>
+                                    <a th:href="@{/blog/{id}/{slug}(id = ${post.id}, slug = ${post.slug})}"
+                                       class="popup-gallery image-box-relative image-box-3x2">
+                                        <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                             width="100%" height="250" alt=""
+                                             th:src="${post.thumbnailUrl}"></a>
+                                    <div class="subject-kiritm">
+                                        <div class="subject-kiritm-text">
+                                            Du lịch
+                                        </div>
+                                        <div class="subject-kiritm-title">
+                                            Việt Nam
+                                        </div>
+                                    </div>
+                                </figure>
+                                <div class="details-kiritm">
+                                    <div class="detail-title">
+                                        <a class="detail-title-text"
+                                           th:href="@{/blog/category/{categoryId}/{categoryCode}(categoryId = ${post.categoryResponseModel.id}, categoryCode=${post.categoryResponseModel.code})}"
+                                           th:text="${post.categoryResponseModel.name}">
+                                        </a>
+                                    </div>
+                                    <div class="detail-name">
+                                        <a th:href="@{/blog/{id}/{slug}(id = ${post.id}, slug = ${post.slug})}"
+                                           class="detail-name-text"
+                                           title="${post.title}" th:text="${post.title}"></a>
+                                    </div>
+                                </div>
+                                <!--                                <input type="hidden" value="${item.id}">-->
+                            </article>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+        <section class="whiteSection">
+            <div class="container commitment">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="commitment-box">
+                            <div class="commitment-image">
+                                <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|" width="60px"
+                                     height="60px" class="icon-commitment"
+                                     th:src="@{web/img/price.png}" alt="image commitment"/>
+                            </div>
+                            <div class="commitment-content">
+                                <span class="commitment-taitle">GIÁ TỐT - NHIỀU ƯU ĐÃI</span>
+                                <p class="commitment-description">Ưu đãi và quà tặng hấp dẫn khi mua tour online</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="commitment-box">
+                            <div class="commitment-image">
+                                <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|" width="60px"
+                                     height="60px" class="icon-commitment"
+                                     th:src="@{web/img/pay.png}" alt="image commitment"/>
+                            </div>
+                            <div class="commitment-content">
+                                <span class="commitment-taitle">THANH TOÁN AN TOÀN</span>
+                                <p class="commitment-description">Được bảo mật bởi tổ chức quốc tế Global Sign</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="commitment-box">
+                            <div class="commitment-image">
+                                <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|" width="60px"
+                                     height="60px" class="icon-commitment"
+                                     th:src="@{web/img/promotion.png}" alt="image commitment"/>
+                            </div>
+                            <div class="commitment-content">
+                                <span class="commitment-taitle">TƯ VẤN MIỄN PHÍ</span>
+                                <p class="commitment-description">Hỗ trợ tư vấn online miễn phí</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="commitment-box">
+                            <div class="commitment-image">
+                                <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|" width="60px"
+                                     height="60px" class="icon-commitment"
+                                     th:src="@{web/img/star.png}" alt="image commitment"/>
+                            </div>
+                            <div class="commitment-content">
+                                <span class="commitment-taitle">THƯƠNG HIỆU UY TÍN</span>
+                                <p class="commitment-description">Thương hiệu lữ hành hàng đầu Việt Nam</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<!--Start of Tawk.to Script-->
+<!--<script type="text/javascript">-->
+<!--    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();-->
+<!--    (function(){-->
+<!--        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];-->
+<!--        s1.async=true;-->
+<!--        s1.src='https://embed.tawk.to/60b28d4c6699c7280da99fc6/1f6snftjc';-->
+<!--        s1.charset='UTF-8';-->
+<!--        s1.setAttribute('crossorigin','*');-->
+<!--        s0.parentNode.insertBefore(s1,s0);-->
+<!--    })();-->
+<!--</script>-->
+<!--End of Tawk.to Script-->
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+<script>
+    $(document).ready(function () {
+
+        var showItem = 3;
+        if (detectmob()) {
+            showItem = 1;
+        }
+        $('.slider-slick').slick({
+            dots: true,
+            infinite: true,
+            slidesToShow: showItem,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 5000
+        });
+
+        //datepicker searchboxWeb
+        $('#toDateSearchBoxWebTour').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            orientation: 'top auto',
+            todayBtn: 'linked',
+            todayHighlight: true
+        });
+        $('#fromDateSearchBoxWebTour').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            orientation: 'top auto',
+            todayBtn: 'linked',
+            todayHighlight: true
+        }).on('changeDate', function (selected) {
+            var minDate = new Date(selected.date.valueOf());
+            $('#toDateSearchBoxWebTour').datepicker('setStartDate', minDate);
+        });
+
+        //datepicker searchbox mobile
+        $('#toDateSearchBox').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            orientation: 'top auto',
+            todayBtn: 'linked',
+            todayHighlight: true
+        });
+        $('#fromDateSearchBox').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            orientation: 'top auto',
+            todayBtn: 'linked',
+            todayHighlight: true
+        }).on('changeDate', function (selected) {
+            console.log(selected.date.valueOf());
+            var minDate = new Date(selected.date.valueOf());
+            $('#toDateSearchBox').datepicker('setStartDate', minDate);
+        });
+    });
+
+    function detectmob() {
+        if (navigator.userAgent.match(/Android/i) ||
+            navigator.userAgent.match(/webOS/i) ||
+            navigator.userAgent.match(/iPhone/i) ||
+            navigator.userAgent.match(/iPad/i) ||
+            navigator.userAgent.match(/iPod/i) ||
+            navigator.userAgent.match(/BlackBerry/i) ||
+            navigator.userAgent.match(/Windows Phone/i)
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

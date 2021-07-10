@@ -1,0 +1,248 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-admin :: admin_head}"></head>
+<body class="no-skin">
+<div th:replace="~{fragments/fragments-admin :: admin_header}"></div>
+<div class="main-container">
+    <div th:replace="~{fragments/fragments-admin :: admin_menu}"></div>
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                <ul class="breadcrumb">
+                    <li><i class="ace-icon fa fa-home home-icon"></i>
+                        <a th:href="@{/admin}">Trang chủ</a></li>
+                    <li class="active">Tour</li>
+                </ul>
+                <!-- /.breadcrumb -->
+            </div>
+            <div class="page-content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div th:if="${message}" th:class="|alert ${message.get('alert')}|">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <i class="ace-icon fa fa-times"></i>
+                            </button>
+                            <h4 class="text-center" th:text="${message.get('msg')}"></h4>
+                        </div>
+                        <div class="widget-box table-detail">
+                        </div>
+                        <div class="dataTables_wrapper form-inline no-footer">
+                            <div class="row">
+                                <form th:action="@{/admin/tour/list}" id="search-form" method="get">
+                                    <div class="col-xs-10">
+                                        <div class="dataTables_length">
+                                            <label>Tìm kiếm</label>
+                                            <input name="keyword" th:value="${keyword}" type="search" id="search-box"
+                                                   class=" col-xs-12 input-sm"
+                                                   placeholder="Từ khoá"
+                                                   aria-controls="dynamic-table"/>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" th:value="${tourModel.page}" id="page" name="page">
+                                    <input type="hidden" th:value="${tourModel.limit}" id="limit" name="limit">
+                                    <th:block th:if="${tourModel.sortBy}">
+                                        <input type="hidden" th:value="${tourModel.sortBy}" id="sort" name="sort">
+                                    </th:block>
+                                    <th:block th:if="${tourModel.isDesc}">
+                                        <input type="hidden" th:value="${tourModel.isDesc}" id="desc" name="desc">
+                                    </th:block>
+                                </form>
+                                <div class="col-xs-1">
+                                    <select class="col-lg-12 input-sm" id="sort">
+                                        <option>--Xếp theo--</option>
+                                        <option>Điểm xuất phát</option>
+                                        <option>Ngày đi</option>
+                                        <option>Ngày về</option>
+                                        <option>Giá người lớn</option>
+                                        <option>Giá trẻ em</option>
+                                        <option>Giá trẻ sơ sinh</option>
+                                    </select>
+                                    <select class="col-lg-12 input-sm" id="desc">
+                                        <option>Tăng dần</option>
+                                        <option>Giảm dần</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-1">
+                                    <div class="dataTables_filter">
+                                        <div class="table-btn-controls">
+                                            <div class="pull-right tableTools-container">
+                                                <div class="dt-buttons btn-overlap btn-group">
+                                                    <a flag="info"
+                                                       class="dt-button-info buttons-colvis btn btn-white btn-primary btn-bold"
+                                                       data-toggle="tooltip" title="Thêm mới"
+                                                       th:href="@{/admin/tour/add}">
+                                                <span>
+                                                    <i class="fa fa-plus-circle bigger-110 purple"></i>
+                                                </span>
+                                                    </a>
+                                                    <a class="dt-button-info buttons-colvis btn btn-white btn-primary btn-bold"
+                                                       data-toggle="tooltip" title="Export to Excel"
+                                                       th:href="@{/admin/tour/export}">
+                                                <span>
+                                                    <i class="fa fa-database orange"></i>
+                                                </span>
+                                                    </a>
+                                                    <button id="btnDelete" type="button"
+                                                            onclick="warningBeforeDelete()"
+                                                            class="dt-button-info buttons btn btn-white btn-primary btn-bold"
+                                                            data-toggle="tooltip"
+                                                            title="Xóa" href="#" disabled>
+                                                    <span>
+                                                        <i class="fa fa-trash-o bigger-110 pink"></i>
+                                                    </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover dataTable no-footer">
+                                            <thead>
+                                            <tr>
+                                                <th><input type="checkbox" id="checkAll"></th>
+                                                <th class="sorting_">Tên</th>
+                                                <th class="sorting_">Ảnh</th>
+                                                <th class="sorting_">Địa danh</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <form th:action="@{/admin/tour/delete}" id="delete-form"
+                                                  th:object="${tourModel}" method="post">
+                                                <tr th:each="tour : *{results}">
+                                                    <td><input type="checkbox" th:id="|check_box_${tour.id}|"
+                                                               name="ids"
+                                                               th:value="${tour.id}"/></td>
+                                                    <td th:text="${tour.name}"></td>
+                                                    <td><img
+                                                            th:onError="|this.onerror=null;this.src='@{/admin/assets/images/placeholder/no-img.png}';|"
+                                                            style="width: 150px; height: 100px"
+                                                            th:src="${tour.thumbnailUrl}"/></td>
+                                                    <td>
+                                                        <th:block th:if="${tour.placeResponseModels}" th:each="place, state :
+                                                            ${tour.placeResponseModels}">
+                                                            <h5 th:unless="state.last"
+                                                                th:text="|${place.name} - |"></h5>
+                                                            <h5 th:if="state.last" th:text="${place.name}"></h5>
+                                                        </th:block>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-sm btn-primary btn-edit" title="Cập nhật"
+                                                           th:href="@{|/admin/tour/edit?id=${tour.id}|}">
+                                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                        </a>
+                                                        <a class="btn btn-sm" title="Xem DS chuyến đi"
+                                                           th:href="@{|/admin/trip/list?tour=${tour.id}|}">
+                                                            <i class="fa fa-list-alt" aria-hidden="true"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </form>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <select id="limit-select">
+                                        <option value="5" th:selected="${tourModel.limit == 5}">5 row</option>
+                                        <option value="10" th:selected="${tourModel.limit == 10}">10 row</option>
+                                        <option value="20" th:selected="${tourModel.limit == 20}">20 row</option>
+                                        <option value="50" th:selected="${tourModel.limit == 50}">50 row</option>
+                                        <option value="100" th:selected="${tourModel.limit == 100}">100 row</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <ul class="pagination" id="pagination"></ul>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="~{fragments/fragments-admin :: admin_footer}"></div>
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+    <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+</a>
+<th:block th:replace="~{fragments/fragments-admin :: admin_script}"></th:block>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+
+    var currentPage = [[${tourModel.page}]]
+    var limit = [[${tourModel.limit}]]
+    var totalPage = [[${tourModel.totalPages}]]
+    $(function () {
+        window.pagObj = $('#pagination').twbsPagination({
+            totalPages: totalPage,
+            visiblePages: 5,
+            startPage: currentPage,
+            onPageClick: function (event, page) {
+                if (currentPage != page) {
+                    $('#limit').val(limit);
+                    $('#page').val(page);
+                    $('#search-form').submit();
+                }
+            }
+        })
+    });
+    ///////////////////////////
+    $("#search-box").on('keyup', function (e) {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            $("#search-form").submit();
+        }
+    });
+
+    $('#limit-select').on('change', function () {
+        var limitSelected = $('#limit-select option:selected').val();
+        $('#page').val(1);
+        $('#limit').val(limitSelected);
+        $("#search-form").submit();
+    });
+
+    $('#sort').on('change', function () {
+        $('#page').val(1);
+        $("#search-form").submit();
+    });
+
+    $('#desc').on('change', function () {
+        $('#page').val(1);
+        $("#search-form").submit();
+    });
+    ////////////////////////////////////////////////////////////////
+
+    $("#checkAll").change(function () {
+        $("input:checkbox").prop('checked', $(this).prop("checked"));
+    });
+
+    var checkboxes = $("input[type='checkbox']"),
+        submitButt = $("button[type='button']");
+
+    checkboxes.click(function () {
+        submitButt.attr("disabled", !checkboxes.is(":checked"));
+    });
+
+    function warningBeforeDelete() {
+        swal({
+            title: "Xác nhận xóa",
+            text: "Bạn có chắc chắn muốn xóa hay không",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-success",
+            cancelButtonClass: "btn-danger",
+            confirmButtonText: "Xác nhận",
+            cancelButtonText: "Hủy",
+        }).then(function (isConfirm) {
+            if (isConfirm.dismiss) {
+            } else $('#delete-form').submit();
+        });
+    }
+
+    /*]]>*/
+</script>
+</body>
+</html>

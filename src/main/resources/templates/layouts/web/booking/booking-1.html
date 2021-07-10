@@ -1,0 +1,547 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-web :: web_head}"></head>
+<body class="changeHeader">
+</div>
+<div class="modal fade modal-login modal-border-transparent" id="loginModal" tabindex="-1" role="dialog"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="btn btn-close close" data-dismiss="modal" aria-label="Close">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+            <div class="clear"></div>
+            <div id="modal-login-form-wrapper">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <section>
+        <div class="pageTitle page-image-tour-tag"
+             style="background-image:url(https://res.cloudinary.com/jstit/image/upload/v1621256527/9tour/background/booking_j79llf.jpg)">
+        </div>
+    </section>
+    <section>
+        <div class="container" style="position: relative">
+            <div class="background-description">
+                <h1 class="tour-banner-title">Đặt tour</h1>
+            </div>
+        </div>
+    </section>
+    <!-- PAGE CONTENT -->
+    <section class="mainContentSection booking-container">
+        <div class="container">
+            <div class="row progress-wizard" style="border-bottom:0;">
+                <div class="col-sm-3 col-xs-12 progress-wizard-step active ">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">1</span>. Chọn dịch vụ
+                    </a>
+                </div>
+                <div class="col-sm-3 col-xs-12 progress-wizard-step  disabled">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">2</span>. Nhập thông tin
+                    </a>
+                </div>
+                <div class="col-sm-3 col-xs-12 progress-wizard-step  disabled">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">3</span>. Thanh toán
+                    </a>
+                </div>
+                <div class="col-sm-3 col-xs-12 progress-wizard-step  disabled">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">4</span>. Kết quả
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 col-sm-12 col-xs-12">
+                    <div class="payment-wrap bookingForm">
+                        <form th:action="@{/tour/booking/process/pax-no(sessionId = ${#session.getId()})}" role="form"
+                              method="post" class="form"
+                              id="info-form">
+                            <div class="no-padding">
+                                <div class="title">
+                                    <h3>Số lượng hành khách</h3>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-5 col-xs-12 no-padding">
+                                        <div class="form-group">
+                                            <label>Người lớn (*)</label>
+                                            <input th:field="${booking.adultQuantity}" type="number" placeholder=""
+                                                   class="form-control has-value " required="required" min="1"
+                                                   th:max="${trip.adultAvailable}" value="1"
+                                                   pattern="^\d+$" data-validation="required"
+                                                   oninput="this.value = Math.round(this.value);"/>
+                                            <span class="error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7 col-sm-7 col-xs-12 no-padding">
+                                        <ul class="highlight-text">
+                                            <li style="color: red"
+                                                th:text="${'Còn lại: ' + trip.adultAvailable} + ' chỗ'"></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-5 col-xs-12 no-padding">
+                                        <div class="form-group">
+                                            <label>Trẻ em </label>
+                                            <input th:field="${booking.childQuantity}" type="number" placeholder=""
+                                                   class="form-control" min="0" th:max="${trip.childAvailable}"
+                                                   pattern="^\d+$"
+                                                   data-validation="required" required="required"
+                                                   oninput="this.value = Math.round(this.value);"/>
+                                            <span class="error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7 col-sm-7 col-xs-12 no-padding">
+                                        <ul class="highlight-text">
+                                            <li style="color: red"
+                                                th:text="${'Còn lại: ' + trip.childAvailable} + ' chỗ'"></li>
+                                            <li>Áp dụng từ 6 đến 11 tuổi</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-5 col-xs-12 no-padding">
+                                        <div class="form-group">
+                                            <label>Em bé </label>
+                                            <input th:field="${booking.infantQuantity}" type="number" placeholder=""
+                                                   class="form-control" min="0" th:max="${trip.infantAvailable}"
+                                                   pattern="^\d+$"
+                                                   data-validation="required" required="required"
+                                                   oninput="this.value = Math.round(this.value);"/>
+                                            <span class="error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7 col-sm-7 col-xs-12 no-padding">
+                                        <ul class="highlight-text">
+                                            <li style="color: red"
+                                                th:text="${'Còn lại: ' + trip.infantAvailable} + ' chỗ'"></li>
+                                            <li>Áp dụng từ 2 đến 5 tuổi</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <th:block th:if="${!services.results.isEmpty()}">
+                                <div class="no-padding">
+                                    <div class="title">
+                                        <h3>DỊCH VỤ CỘNG THÊM</h3>
+                                    </div>
+                                    <th:block th:each="service, state :${services.results}">
+                                        <div class="row add-on-services">
+                                            <div class="col-md-3 col-sm-3 col-xs-12 no-padding">
+                                                <div class="service-box-image">
+                                                    <a href="" target="_blank"
+                                                       class="isotopeSelector image-box-relative image-box-3x2">
+                                                        <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                                             class="service-image" th:src="${service.thumbnailUrl}"
+                                                             alt="Image">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5 col-sm-5 col-xs-12 no-padding">
+                                                <div class="service-box-content">
+                                                    <a href="" target="_blank" class="content-title"
+                                                       th:title="${service.name}">
+                                                        [[${service.name}]]
+                                                    </a>
+                                                    <div class="content-description">
+                                                        [[${service.description}]]
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-4 col-xs-12 no-padding">
+                                                <div class="service-box-price">
+                                                    <div class="price-info">
+                                                        Giá
+                                                        <strong th:text="${#numbers.formatInteger(service.price,3,'POINT')}"></strong>
+                                                        đ/khách
+                                                    </div>
+                                                    <div class="price-number">
+                                                        <span class="label-price-number">Chọn số lượng: </span>
+                                                        <input th:data-price="${service.price}" type="number"
+                                                               th:field="${booking.extraServices[__${state.index}__].quantity}"
+                                                               class="input-price-number input-price-extra-service"
+                                                               min="0">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" th:value="${service.id}"
+                                               th:name="extraServices[__${state.index}__].id">
+                                        <input type="hidden" th:value="${service.name}"
+                                               th:name="extraServices[__${state.index}__].name">
+                                        <input type="hidden" th:value="${service.price}"
+                                               th:name="extraServices[__${state.index}__].price">
+                                        <!--                                        <input type="hidden" th:value="${service.price}" th:name="${booking.extraServices[__${state.index}__].price}">-->
+                                    </th:block>
+                                </div>
+                            </th:block>
+                            <div class="no-padding">
+                                <div class="title">
+                                    <h3>Phương thức thanh toán</h3><br/>
+                                    <p><b>Chọn một trong các phương thức sau:</b></p>
+                                    <div class="methods">
+                                        <div class="method">
+                                            <input value="1" style="display: none" type="radio" id="vnpay"
+                                                   class="payment-method" name="method">
+                                            <div class="method-content">
+                                                <label class="title" toggle="Bank" for="vnpay">
+                                                    <h4 style="margin: 0 0 10px;">Thanh toán qua cổng thanh toán VNPAY
+                                                        (thẻ ATM nội địa)</h4>
+                                                    <div class="description">
+                                                        Sau khi đặt tour và thanh toán thành công, chúng tôi sẽ gửi
+                                                        thông báo qua email cho quý khách.
+                                                    </div>
+                                                    <i class="fa fa-chevron-down"></i>
+                                                    <i class="fa fa-check"></i>
+                                                </label>
+                                                <div class="content" id="Bank">
+                                                    <ul>
+                                                        <li>
+                                                            <p>Chúng tôi chấp nhận thanh toán bằng các thẻ ATM nội địa
+                                                                do các ngân hàng tại Việt Nam phát hành.</p>
+                                                        </li>
+                                                        <li>
+                                                            <p>Thẻ ghi nợ nội địa (thẻ ATM): Vietcombank, Vietinbank,
+                                                                DongA , VIBank, Techcombank, HDBank, Tienphong Bank,
+                                                                Military Bank, VietA Bank, Maritime Bank, Eximbank, SHB,
+                                                                Sacombank, NamA Bank,...(23 Ngân hàng)</p>
+                                                        </li>
+                                                    </ul>
+                                                    <p><br/>
+                                                        <strong>Lưu ý khi thanh toán:</strong></p>
+                                                    <ul>
+                                                        <li>
+                                                            <p>Khi thanh toán, quý khách vui lòng giữ lại hóa đơn thanh
+                                                                toán của ngân hàng, để việc đối soát được dễ dàng khi
+                                                                gặp lỗi từ ngân hàng. Xin cảm ơn quý khách!</p>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="method">
+                                            <input value="2"
+                                                   style="display: none" type="radio" id="momo"
+                                                   class="payment-method" name="method">
+                                            <div class="method-content">
+                                                <label class="title" toggle="vi-dien-tu-mo-mo"
+                                                       for="momo">
+                                                    <h4 style="margin: 0 0 10px;">Thanh toán bằng ví điện tử momo</h4>
+                                                    <div class="description">Sau khi đặt tour và thanh toán thành công,
+                                                        chúng tôi sẽ gửi thông báo qua email cho quý khách.
+                                                    </div>
+                                                    <i class="fa fa-chevron-down"></i>
+                                                    <i class="fa fa-check"></i>
+                                                </label>
+                                                <div class="content" id="vi-dien-tu-mo-mo">
+                                                    <ul>
+                                                        <li>
+                                                            <p>
+                                                                Chúng tôi chấp nhận thanh toán bằng Ví điện tử Momo.
+                                                            </p>
+                                                            <p><b>(*) Hạn mức tối đa là 20.000.000 VNĐ</b></p>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="buttonArea galleryBtnArea">
+                                    <ul class="list-inline">
+                                        <li>
+                                            <a th:href="@{/tour/{id}/{slug}(id = ${trip.getTourResponseModel.id}, slug = ${trip.getTourResponseModel.slug})}"
+                                               class="btn buttonTransparent">Trở về</a>
+                                        </li>
+                                        <li class="pull-right">
+                                            <button type="submit" data-callback="validate" id="submit-button"
+                                                    class="btn buttonTransparent">Tiếp tục
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                document.getElementById('submit-button').onclick = ev => {
+                                    ev.preventDefault();
+                                    if ($('#info-form input[name=method]:checked').length === 0) {
+                                        notify('Bạn phải chọn phương thức thanh toán');
+                                        return;
+                                    }
+                                    if ($('#info-form input[id=momo]:checked').length !== 0) {
+                                        notify('Phương thức thanh toán này hiện đang bảo trì');
+                                        return;
+                                    }
+                                    if ($("input[name=adultQuantity]").val() <= 0 || $("input[name=adultQuantity]").val() === null || $("input[name=adultQuantity]").val() === '') {
+                                        notify('Số lượng NGƯỜI LỚN tối thiểu là 1');
+                                        return;
+                                    }
+                                    if ($("input[name=adultQuantity]").val() > [[${trip.adultAvailable}]]) {
+                                        notify('Số lượng NGƯỜI LỚN vượt quá số lượng vé còn lại, còn lại: ' + [[${trip.adultAvailable}]]);
+                                        return;
+                                    }
+                                    if ($("input[name=childQuantity]").val() > [[${trip.childAvailable}]]) {
+                                        notify('Số lượng TRẺ EM vượt quá số lượng vé còn lại, còn lại: ' + [[${trip.childAvailable}]]);
+                                        return;
+                                    }
+                                    if ($("input[name=infantQuantity]").val() > [[${trip.infantAvailable}]]) {
+                                        notify('Số lượng EM BÉ vượt quá số lượng vé còn lại, còn lại: ' + [[${trip.infantAvailable}]]);
+                                        return;
+                                    }
+                                    if (parseInt(($("input[name=adultQuantity]").val() * 1) + parseInt($("input[name=childQuantity]").val() * 1) + parseInt($("input[name=infantQuantity]").val()) * 1) > 100) {
+                                        notify('Tổng hành khách không được vượt quá 100 người');
+                                        return;
+                                    }
+                                    // if ($("input[name=adultQuantity]").val() * [[${trip.adultPrice}]]) +
+                                    //     ($("input[name=childQuantity]").val() * [[${trip.childPrice}]]) +
+                                    //     ($("input[name=childQuantity]").val()*[[${trip.childPrice}]]){
+                                    //     console.log(document.getElementById('total-price').value);
+                                    //     notify('Phương thức thanh toán hiện tại chỉ cho phép thanh toán tối đa 1 tỷ đồng');
+                                    //     return;
+                                    // }
+                                    var i = document.getElementsByClassName("help-block error");
+                                    if (i.length === 0)
+                                        document.getElementById('info-form').submit();
+                                }
+                                $.validate({modules: 'html5', errorMessageClass: 'error', lang: 'vi'});
+                            </script>
+                            <input type="hidden" th:value="${trip.id}" name="tripId"/>
+                            <input type="hidden" th:value="${trip.adultPrice}" name="adultPrice"/>
+                            <input type="hidden" th:value="${trip.childPrice}" name="childPrice"/>
+                            <input type="hidden" th:value="${trip.infantPrice}" name="infantPrice"/>
+                            <input type="hidden" th:value="${trip.code}" name="codeOfTrip"/>
+                            <input type="hidden" th:value="${trip.getTourResponseModel.name}" name="tourName"/>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12 col-xs-12">
+                    <aside>
+                        <a style="display: block" class="infoTitle-kiritm" href="tel:1900 1808">
+                            <span>Hỗ trợ giao dịch <strong>1900 1900</strong></span>
+                        </a>
+                        <div class="bookDetailsInfo">
+                            <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                 th:src="${trip.getTourResponseModel.thumbnailUrl}" alt="image">
+                            <div class="infoArea">
+                                <h3><a target="_blank"
+                                       th:href="@{/tour/{id}/{slug}(id = ${trip.getTourResponseModel.id}, slug = ${trip.getTourResponseModel.slug})}">[[${trip.tourResponseModel.name}]]</a>
+                                </h3>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <i class="fa fa-barcode" aria-hidden="true"></i>
+                                        Code:
+                                        <span>[[${trip.code}]]</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-calendar-minus-o" aria-hidden="true"></i>
+                                        Ngày đi:
+                                        <span th:text="${#dates.format(trip.departureTime, 'dd-MM-yyyy')}"></span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
+                                        </i>Ngày về:
+                                        <span th:text="${#dates.format(trip.returnTime, 'dd-MM-yyyy')}"></span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                        </i>Thời gian:
+                                        <span>[[${trip.tourResponseModel.duringTime}]]</span>
+                                    </li>
+                                    <li id="liAdult" class="display-hidden">
+                                        <i class="fa fa-user-secret" aria-hidden="true"></i>
+                                        Giá Người lớn :
+                                        <span>
+                                            <strong th:text="${#numbers.formatInteger(trip.adultPrice,3,'POINT')}"></strong> đ
+                                        </span>
+                                        <span id="adult"></span></li>
+                                    <li id="liChild" class="display-hidden"><i class="fa fa-child"
+                                                                               aria-hidden="true"></i>
+                                        Giá trẻ em :
+                                        <span>
+                                            <strong th:text="${#numbers.formatInteger(trip.childPrice,3,'POINT')}"></strong> đ
+                                        </span>
+                                        <span id="child"></span></li>
+                                    <li id="liInfant" class="display-hidden"><i class="fa fa-user-times"
+                                                                                aria-hidden="true"></i>
+                                        Giá em bé:
+                                        <span>
+                                            <strong th:text="${#numbers.formatInteger(trip.infantPrice,3,'POINT')}"></strong> đ
+                                        </span>
+                                        <span id="infant"></span>
+                                    </li>
+                                    <li id="liExtraServices" class="display-hidden" style="display: none;"><i
+                                            class="fa fa-cart-plus" aria-hidden="true"></i>
+                                        Dịch vụ cộng thêm:
+                                        <span><strong id="priceExtraServices"></strong> đ</span></li>
+                                </ul>
+                                <div class="priceTotal">
+                                    <h2>Tổng: <span id="total-price">0</span>
+                                        <span style="font-size: 16px;
+                                        color: #000;
+                                        font-weight: 500;
+                                        line-height: 21px;
+                                        text-transform: lowercase;"> đ</span>
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<script>
+    var adultPrice = [[${trip.adultPrice}]];
+    var childPrice = [[${trip.childPrice}]];
+    var infantPrice = [[${trip.infantPrice}]];
+    var totalPrice = 0;
+
+    function updateAmount() {
+        var adult = $("input[name=adultQuantity]").val();
+        var child = $("input[name=childQuantity]").val();
+        var infant = $("input[name=infantQuantity]").val();
+
+        if (adult >= 0 && child >= 0 && infant >= 0) {
+            if (adult > 0) {
+                $("#liAdult").show();
+            } else {
+                $("#liAdult").hide();
+            }
+            if (child > 0) {
+                $("#liChild").show();
+            } else {
+                $("#liChild").hide();
+            }
+            if (infant > 0) {
+                $("#liInfant").show();
+            } else {
+                $("#liInfant").hide();
+            }
+            $("#adult").html(adult > 0 ? " X " + adult : "");
+            $("#child").html(child > 0 ? " X " + child : "");
+            $("#infant").html(infant > 0 ? " X " + infant : "");
+            var priceExtra = updateExtraServices();
+            $("#priceExtraServices").html(priceExtra.formatMoney(0, ',', '.'));
+            totalPrice = adult * adultPrice + child * childPrice + infant * infantPrice + priceExtra;
+            // $("#total-price").html(totalPrice.currencyFormat());
+            $("#total-price").html(totalPrice.formatMoney(0, ',', '.'));
+        }
+    }
+
+    $(document).on('ready', function () {
+        $("body").on('input', 'input[name=adultQuantity],input[name=childQuantity],input[name=infantQuantity], .input-price-extra-service', function () {
+            updateAmount();
+        });
+    })
+
+    // function validate(token) {
+    //     if ($('#info-form input[name=method]:checked').length === 0) {
+    //         notify('Bạn phải chọn phương thức thanh toán');
+    //         return;
+    //     }
+    //     submitFunction(token);
+    // }
+
+    function updateExtraServices() {
+        var showExtra = false;
+        var priceExtra = 0;
+        var extraServices = document.getElementsByClassName('input-price-extra-service');
+        $('.input-price-extra-service').each(function (idx) {
+            var value = parseInt($(this).val());
+            if (value > 0) {
+                showExtra = true;
+                priceExtra += value * parseInt($(this).attr('data-price'));
+            }
+        });
+        if (showExtra) {
+            $("#liExtraServices").show();
+        } else {
+            $("#liExtraServices").hide();
+        }
+        return priceExtra;
+    }
+
+    Number.prototype.formatMoney = function (c, d, t) {
+        var n = this,
+            c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+            j = (j = i.length) > 3 ? j % 3 : 0;
+        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    };
+
+    function notify(message, key) {
+        $.notify(message, {
+            delay: 5000,
+            type: key || 'danger',
+            icon: 'glyphicon glyphicon-warning-sign',
+            offset: {x: 30, y: 80},
+            placement: {from: 'top', 'align': 'right'},
+            mouse_over: 'pause'
+        });
+    }
+
+    function onload() {
+        var element = document.getElementById('submit-button');
+        element.onclick = validate;
+    }
+
+    // function submitFunction(token) {
+    //     var products = [{
+    //         id: 3821,
+    //         categoryId: 3821,
+    //         transactionId: "NjBiYTJiMjkwZWM3Nw",
+    //         price: 8479000,
+    //         quantity: parseInt($("input[name=adult]").val() || 0) + parseInt($("input[name=child]").val() || 0),
+    //         name: "Du lịch Hải Phòng - Hạ Long - Ninh Bình - Hà Nội - Lào Cai - Sapa - Đền Hùng",
+    //         brandName: "saigontourist",
+    //         desc: "6 ngày 5 đêm - Hàng không Vietnam Airlines",
+    //         imageUrl: "https://www.saigontourist.net/uploads/destination/TrongNuoc/Hanoi/hoan-kiem-lake-ha-noi.jpg",
+    //         link: "https://www.saigontourist.net/vi/booking/book-tour/pax-no/21473"
+    //     }];
+    //     ematics("log", "product", "checkout", products);
+    //
+    //     document.getElementById("info-form").submit();
+    // }
+    // jQuery(function($) {
+    //     function fixDiv() {
+    //         var infoArea = $('.bookDetailsInfo .infoArea');
+    //         var bookDetailsInfo = $('.bookDetailsInfo');
+    //         if ($(window).scrollTop() - $('.bookDetailsInfo > img').height() + 50 > bookDetailsInfo.offset().top
+    //             && ($(window).scrollTop() + 90 + infoArea.height() < $('.footer').offset().top)
+    //         ) {
+    //             if(!infoArea.hasClass('fix-right-info')) infoArea.addClass('fix-right-info');
+    //         } else {
+    //             if(infoArea.hasClass('fix-right-info')) infoArea.removeClass('fix-right-info');
+    //         }
+    //     }
+    //     $(window).scroll(fixDiv);
+    //     fixDiv();
+    // });
+</script>
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+</body>
+</html>

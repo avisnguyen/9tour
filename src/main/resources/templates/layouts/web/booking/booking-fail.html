@@ -1,0 +1,89 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-web :: web_head}"></head>
+<body class="changeHeader">
+</div>
+<div class="modal fade modal-login modal-border-transparent" id="loginModal" tabindex="-1" role="dialog"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="btn btn-close close" data-dismiss="modal" aria-label="Close">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+            <div class="clear"></div>
+            <div id="modal-login-form-wrapper">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <section>
+        <div class="pageTitle page-image-tour-tag"
+             style="background-image:url(https://res.cloudinary.com/jstit/image/upload/v1621256527/9tour/background/booking_j79llf.jpg)">
+        </div>
+    </section>
+    <section>
+        <div class="container" style="position: relative">
+            <div class="background-description">
+                <h1 class="tour-banner-title">Đặt tour</h1>
+            </div>
+        </div>
+    </section>
+    <!-- PAGE CONTENT -->
+    <section class="mainContentSection booking-container">
+        <div class="container">
+            <div class="row progress-wizard" style="border-bottom:0;">
+                <div class="col-sm-3 col-xs-12 progress-wizard-step complete ">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">1</span>. Chọn dịch vụ
+                    </a>
+                </div>
+                <div class="col-sm-3 col-xs-12 progress-wizard-step complete">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">2</span>. Nhập thông tin
+                    </a>
+                </div>
+                <div class="col-sm-3 col-xs-12 progress-wizard-step complete">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">3</span>. Thanh toán
+                    </a>
+                </div>
+                <div class="col-sm-3 col-xs-12 progress-wizard-step active">
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <a href="javascript:void(0)" class="progress-wizard-dot">
+                        <span style="font-size: 20px">4</span>. Kết quả
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="alert alert-warning alert-dismissible center" role="alert"
+                         style="height: 180px;text-align: center;">
+                        <h4><i class="fa fa-warning fa-5x" aria-hidden="true"></i></h4>
+                        <h4>
+                            Đặt tour thất bại!
+                        </h4>
+                        <p>Thanh toán thất bại, vui lòng kiểm tra và thanh toán lại <a
+                                th:href="@{/tai-khoan/lich-su-dat-tour}"> tại đây</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+</body>
+</html>

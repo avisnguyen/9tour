@@ -1,0 +1,572 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-admin :: admin_head}"></head>
+<body class="no-skin">
+<div th:replace="~{fragments/fragments-admin :: admin_header}"></div>
+<div class="main-container ace-save-state" id="main-container">
+    <script type="text/javascript">
+        try {
+            ace.settings.loadState('main-container')
+        } catch (e) {
+        }
+    </script>
+    <div th:replace="~{fragments/fragments-admin :: admin_menu}"></div>
+
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="ace-icon fa fa-home home-icon"></i>
+                        <a th:href="@{/admin}">Trang chủ</a>
+                    </li>
+
+                    <li>
+                        <a th:href="@{/admin/tour/list}">Tour</a>
+                    </li>
+                    <li th:if="${tourModel.id}" class="active">Cập nhật thông tin</li>
+                    <li th:unless="${tourModel.id}" class="active">Thêm mới</li>
+                </ul>
+            </div>
+            <div class="page-content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div th:if="${message}" th:class="|alert ${message.get('alert')}|">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <i class="ace-icon fa fa-times"></i>
+                            </button>
+                            <h4 class="text-center" th:text="${message.get('msg')}"></h4>
+                        </div>
+                        <form class="form-horizontal" method="post" role="form" id="formSubmit"
+                              th:object="${tourModel}" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"> Tên tour (*) </label>
+                                <div class="col-sm-7">
+                                    <input th:field="*{name}" class="form-control col-xs-12 col-sm-5"
+                                           required="required"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"> Tiêu đề nhỏ</label>
+                                <div class="col-sm-7">
+                                    <textarea th:field="*{shortDescription}" class="form-control col-xs-12 col-sm-5">
+                                    </textarea>
+                                </div>
+                            </div>
+                            <div class="form-group" th:if="${tourModel.thumbnailUrl}">
+                                <label class="col-sm-3 control-label no-padding-right"> Ảnh đại diện </label>
+                                <div class="col-sm-7">
+                                    <img th:onError="|this.onerror=null;this.src='@{/admin/assets/images/placeholder/no-img.png}';|"
+                                         style="max-width: 50%" th:src="${tourModel.thumbnailUrl}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"> Chọn ảnh </label>
+                                <div class="col-sm-7">
+                                    <input type="file" accept="image/*" name="imageFile"
+                                           class="form-control col-xs-12 col-sm-5"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"> Mô tả</label>
+                                <div class="col-sm-7">
+                                    <textarea th:field="*{description}" class="form-control col-xs-12 col-sm-5">
+                                    </textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right">Chọn địa danh</label>
+                                <div class="col-sm-7" th:if="${allPlaces}">
+
+                                    <input th:if="*{getPlaceResponseModels}" name="places"
+                                           th:data-id="${selectedPlaces}"
+                                           class="magicsearch form-control col-xs-12 col-sm-5" id="places"
+                                           autocomplete="off">
+                                    <input th:unless="*{getPlaceResponseModels}" name="places"
+                                           class="magicsearch form-control col-xs-12 col-sm-5" id="places"
+                                           autocomplete="off">
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right">Nơi đi</label>
+                                <div class="col-sm-3" th:if="${allPlaces}">
+                                    <input th:if="*{getDepartureModel}" name="departure"
+                                           th:data-id="${tourModel.getDepartureModel.id}"
+                                           class="magicsearch form-control col-xs-12 col-sm-5" id="departure"
+                                           autocomplete="off" required>
+                                    <input th:unless="*{getDepartureModel}" name="departure"
+                                           class="magicsearch form-control col-xs-12 col-sm-5" id="departure"
+                                           autocomplete="off" required>
+
+                                </div>
+                                <label class="col-sm-1 control-label no-padding-right">Nơi đến</label>
+                                <div class="col-sm-3" th:if="${allPlaces}">
+                                    <input th:if="*{getDestinationModel}" name="destination"
+                                           th:data-id="${tourModel.getDestinationModel.id}"
+                                           class="magicsearch form-control col-xs-12 col-sm-5" id="destination"
+                                           autocomplete="off" required>
+                                    <input th:unless="*{getDestinationModel}" name="destination"
+                                           class="magicsearch form-control col-xs-12 col-sm-5" id="destination"
+                                           autocomplete="off" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" required>Thời gian tour
+                                    (*)</label>
+                                <div class="col-sm-7">
+                                    <input th:field="*{duringTime}" class="form-control col-xs-12 col-sm-5"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"> Phương tiện (*) </label>
+                                <div class="col-sm-7">
+                                    <input th:field="*{transport}" class="form-control col-xs-12 col-sm-5" required/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label no-padding-right">Chương trình tour</label>
+                                <div class="col-sm-10">
+                                    <textarea th:field="*{itinerary}" class="form-control col-xs-12 col-sm-5">
+                                    </textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label no-padding-right">Chính sách tour</label>
+                                <div class="col-sm-10">
+                                    <textarea th:field="*{termConditions}" class="form-control col-xs-12 col-sm-5">
+                                    </textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label no-padding-right">Câu hỏi thường gặp</label>
+                                <div class="col-sm-10">
+                                    <textarea th:field="*{faq}" class="form-control col-xs-12 col-sm-5">
+                                    </textarea>
+                                </div>
+                            </div>
+                            <div class="clearfix form-actions">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <th:block th:if="${tourModel.id}">
+                                        <button class="btn btn-sm btn-success" type="submit" id="btn-update">
+                                            <i class="ace-icon fa fa-check bigger-110"></i>
+                                            Cập nhật thông tin
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" type="button" id="btn-cancel"
+                                                onclick="warningBeforeCancel()">
+                                            <i class="ace-icon fa fa-times red2 bigger-110"></i>
+                                            Hủy
+                                        </button>
+                                        <h4>Nhấn cập nhật để lưu lại thông tin Tour trước khi sửa DS chuyến đi</h4>
+                                    </th:block>
+                                    <th:block th:unless="${tourModel.id}">
+                                        <button class="btn btn-sm btn-success" type="submit" id="btn-add">
+                                            <i class="ace-icon fa fa-check bigger-110"></i>
+                                            Thêm
+                                        </button>
+                                        <button class="btn btn-sm" type="button" id="btn-go-back"
+                                                onclick="warningBeforeCancel()">
+                                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                                            Trở về
+                                        </button>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div th:if="${tourModel.id}" class="row">
+                    <div class="col-xs-12">
+                        <div class="dataTables_filter">
+                            <div class="table-btn-controls">
+                                <div class="pull-right tableTools-container">
+                                    <div class="dt-buttons btn-overlap btn-group">
+                                        <a flag="info"
+                                           class="dt-button-info buttons-colvis btn btn-white btn-primary btn-bold"
+                                           data-toggle="tooltip" title="Thêm mới"
+                                           th:href="|@{/admin/trip/add}?tour=${tourModel.id}|">
+                                                <span>
+                                                    <i class="fa fa-plus-circle bigger-110 purple"></i>
+                                                </span>
+                                        </a>
+                                        <a class="dt-button-info buttons-colvis btn btn-white btn-primary btn-bold"
+                                           data-toggle="tooltip" title="Export to Excel"
+                                           th:href="@{/admin/trip/export}">
+                                                <span>
+                                                    <i class="fa fa-database orange"></i>
+                                                </span>
+                                        </a>
+                                        <button id="btnDelete" type="button"
+                                                onclick="warningBeforeDelete()"
+                                                class="dt-button-info buttons btn btn-white btn-primary btn-bold"
+                                                data-toggle="tooltip"
+                                                title="Xóa" href="#" disabled>
+                                                    <span>
+                                                        <i class="fa fa-trash-o bigger-110 pink"></i>
+                                                    </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover dataTable no-footer">
+                                <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="checkAll"></th>
+                                    <th class="sorting_">Code</th>
+                                    <th class="sorting_">Điểm xuất phát</th>
+                                    <th class="sorting_">Ngày đi</th>
+                                    <th class="sorting_">Ngày về</th>
+                                    <th class="sorting_">Giá người lớn</th>
+                                    <th class="sorting_">Giá trẻ em</th>
+                                    <th class="sorting_">Giá trẻ sơ sinh</th>
+                                    <th class="sorting_">Tour</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <form th:action="@{/admin/trip/delete}" id="delete-form"
+                                      method="post">
+                                    <input type="hidden" name="ref" th:value="${fullUri}">
+                                    <tr th:each="trip : ${tourModel.getTripResponseModels}">
+                                        <td><input type="checkbox" th:id="|check_box_${trip.id}|"
+                                                   name="ids"
+                                                   th:value="${trip.id}"/></td>
+                                        <td th:text="${trip.code}"></td>
+                                        <td th:text="${trip.departure}"></td>
+                                        <td th:text="${#calendars.format(trip.departureTime, 'dd/MM/yyyy')}"></td>
+                                        <td th:text="${#calendars.format(trip.returnTime, 'dd/MM/yyyy')}"></td>
+                                        <td th:text="${#numbers.formatInteger(trip.adultPrice, 3, 'POINT')}"></td>
+                                        <td th:text="${#numbers.formatInteger(trip.childPrice, 3, 'POINT')}"></td>
+                                        <td th:text="${#numbers.formatInteger(trip.infantPrice, 3, 'POINT')}"></td>
+                                        <td><h5 th:if="${trip.getTourResponseModel}"
+                                                th:text="${trip.getTourResponseModel.name}"></h5></td>
+                                        <td>
+                                            <a class="btn btn-sm btn-primary btn-edit" title="Cập nhật"
+                                               th:href="@{|/admin/trip/edit?id=${trip.id}|}">
+                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </form>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/fragments-admin :: admin_footer}"></div>
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+</div>
+<th:block th:replace="~{fragments/fragments-admin :: admin_script}"></th:block>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+
+    function warningBeforeCancel() {
+        swal({
+            title: "Xác nhận",
+            text: "Bạn có chắc muốn hủy bỏ thao tác này không?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-success",
+            cancelButtonClass: "btn-danger",
+            confirmButtonText: "Xác nhận",
+            cancelButtonText: "Hủy",
+        }).then((isConfirm) => {
+            if (isConfirm.dismiss) {
+            } else {
+                window.location.href = /*[[@{/admin/tour/list}]]*/'';
+            }
+        })
+    }
+
+    CKEDITOR.replace('description', {
+        extraPlugins: 'easyimage',
+        removePlugins: 'image',
+        removeDialogTabs: 'link:advanced',
+        toolbar: [{
+            name: 'document',
+            items: ['Undo', 'Redo']
+        },
+            {
+                name: 'styles',
+                items: ['Format']
+            },
+            {
+                name: 'basicstyles',
+                items: ['Bold', 'Italic', 'Strike', '-', 'RemoveFormat']
+            },
+            {
+                name: 'paragraph',
+                items: ['NumberedList', 'BulletedList']
+            },
+            {
+                name: 'links',
+                items: ['Link', 'Unlink']
+            },
+            {
+                name: 'insert',
+                items: ['EasyImageUpload']
+            }
+        ],
+        height: 300,
+        cloudServices_uploadUrl: 'https://33333.cke-cs.com/easyimage/upload/',
+        cloudServices_tokenUrl: 'https://33333.cke-cs.com/token/dev/ijrDsqFix838Gh3wGO3F77FSW94BwcLXprJ4APSp3XQ26xsUHTi0jcb1hoBt',
+        easyimage_styles: {
+            noGradient: {
+                group: 'easyimage-gradients',
+                attributes: {
+                    'class': 'easyimage-no-gradient'
+                },
+                label: 'No Gradient',
+                icon: 'https://ckeditor.com/docs/ckeditor4/4.16.0/examples/assets/easyimage/icons/nogradient.png',
+                iconHiDpi: 'https://ckeditor.com/docs/ckeditor4/4.16.0/examples/assets/easyimage/icons/hidpi/nogradient.png'
+            }
+        },
+        easyimage_toolbar: [
+            'EasyImageFull',
+            'EasyImageSide',
+            'EasyImageNoGradient',
+            'EasyImageAlt'
+        ]
+    });
+    CKEDITOR.replace('termConditions', {
+        extraPlugins: 'easyimage',
+        removePlugins: 'image',
+        removeDialogTabs: 'link:advanced',
+        toolbar: [{
+            name: 'document',
+            items: ['Undo', 'Redo']
+        },
+            {
+                name: 'styles',
+                items: ['Format']
+            },
+            {
+                name: 'basicstyles',
+                items: ['Bold', 'Italic', 'Strike', '-', 'RemoveFormat']
+            },
+            {
+                name: 'paragraph',
+                items: ['NumberedList', 'BulletedList']
+            },
+            {
+                name: 'links',
+                items: ['Link', 'Unlink']
+            },
+            {
+                name: 'insert',
+                items: ['EasyImageUpload']
+            }
+        ],
+        height: 300,
+        cloudServices_uploadUrl: 'https://33333.cke-cs.com/easyimage/upload/',
+        cloudServices_tokenUrl: 'https://33333.cke-cs.com/token/dev/ijrDsqFix838Gh3wGO3F77FSW94BwcLXprJ4APSp3XQ26xsUHTi0jcb1hoBt',
+        easyimage_styles: {
+            noGradient: {
+                group: 'easyimage-gradients',
+                attributes: {
+                    'class': 'easyimage-no-gradient'
+                },
+                label: 'No Gradient',
+                icon: 'https://ckeditor.com/docs/ckeditor4/4.16.0/examples/assets/easyimage/icons/nogradient.png',
+                iconHiDpi: 'https://ckeditor.com/docs/ckeditor4/4.16.0/examples/assets/easyimage/icons/hidpi/nogradient.png'
+            }
+        },
+        easyimage_toolbar: [
+            'EasyImageFull',
+            'EasyImageSide',
+            'EasyImageNoGradient',
+            'EasyImageAlt'
+        ]
+    });
+    CKEDITOR.replace('faq', {
+        extraPlugins: 'easyimage',
+        removePlugins: 'image',
+        removeDialogTabs: 'link:advanced',
+        toolbar: [{
+            name: 'document',
+            items: ['Undo', 'Redo']
+        },
+            {
+                name: 'styles',
+                items: ['Format']
+            },
+            {
+                name: 'basicstyles',
+                items: ['Bold', 'Italic', 'Strike', '-', 'RemoveFormat']
+            },
+            {
+                name: 'paragraph',
+                items: ['NumberedList', 'BulletedList']
+            },
+            {
+                name: 'links',
+                items: ['Link', 'Unlink']
+            },
+            {
+                name: 'insert',
+                items: ['EasyImageUpload']
+            }
+        ],
+        height: 300,
+        cloudServices_uploadUrl: 'https://33333.cke-cs.com/easyimage/upload/',
+        cloudServices_tokenUrl: 'https://33333.cke-cs.com/token/dev/ijrDsqFix838Gh3wGO3F77FSW94BwcLXprJ4APSp3XQ26xsUHTi0jcb1hoBt',
+        easyimage_styles: {
+            noGradient: {
+                group: 'easyimage-gradients',
+                attributes: {
+                    'class': 'easyimage-no-gradient'
+                },
+                label: 'No Gradient',
+                icon: 'https://ckeditor.com/docs/ckeditor4/4.16.0/examples/assets/easyimage/icons/nogradient.png',
+                iconHiDpi: 'https://ckeditor.com/docs/ckeditor4/4.16.0/examples/assets/easyimage/icons/hidpi/nogradient.png'
+            }
+        },
+        easyimage_toolbar: [
+            'EasyImageFull',
+            'EasyImageSide',
+            'EasyImageNoGradient',
+            'EasyImageAlt'
+        ]
+    });
+    CKEDITOR.replace('itinerary', {
+        extraPlugins: 'easyimage',
+        removePlugins: 'image',
+        removeDialogTabs: 'link:advanced',
+        height: 500,
+        cloudServices_uploadUrl: 'https://33333.cke-cs.com/easyimage/upload/',
+        cloudServices_tokenUrl: 'https://33333.cke-cs.com/token/dev/ijrDsqFix838Gh3wGO3F77FSW94BwcLXprJ4APSp3XQ26xsUHTi0jcb1hoBt',
+        easyimage_styles: {
+            noGradient: {
+                group: 'easyimage-gradients',
+                attributes: {
+                    'class': 'easyimage-no-gradient'
+                },
+                label: 'No Gradient',
+                icon: 'https://ckeditor.com/docs/ckeditor4/4.16.0/examples/assets/easyimage/icons/nogradient.png',
+                iconHiDpi: 'https://ckeditor.com/docs/ckeditor4/4.16.0/examples/assets/easyimage/icons/hidpi/nogradient.png'
+            }
+        },
+        easyimage_toolbar: [
+            'EasyImageFull',
+            'EasyImageSide',
+            'EasyImageNoGradient',
+            'EasyImageAlt'
+        ]
+    });
+
+    $("#checkAll").change(function () {
+        $("input:checkbox").prop('checked', $(this).prop("checked"));
+    });
+
+    var checkboxes = $("input[type='checkbox']"),
+        submitButt = $("button[type='button']");
+
+    checkboxes.click(function () {
+        submitButt.attr("disabled", !checkboxes.is(":checked"));
+    });
+
+    function warningBeforeDelete() {
+        swal({
+            title: "Xác nhận xóa",
+            text: "Bạn có chắc chắn muốn xóa hay không",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-success",
+            cancelButtonClass: "btn-danger",
+            confirmButtonText: "Xác nhận",
+            cancelButtonText: "Hủy",
+        }).then(function (isConfirm) {
+            if (isConfirm.dismiss) {
+            } else $('#delete-form').submit();
+        });
+    }
+
+    $(function () {
+        var dataSource = JSON.parse([[${allPlaces.toString()}]]);
+
+        $('#places').magicsearch({
+            dataSource: dataSource,
+            fields: ['name'],
+            id: 'id',
+            format: '%name%',
+            multiple: true,
+            focusShow: true,
+            hidden: true,
+            multiField: 'name',
+            noResult: 'Không tìm thấy kết quả',
+            dropdownBtn: true,
+            multiStyle: {
+                space: 5,
+                width: 200
+            }
+        });
+
+        $('#departure').magicsearch({
+            dataSource: dataSource,
+            fields: ['name'],
+            id: 'id',
+            format: '%name%',
+            multiple: false,
+            focusShow: true,
+            hidden: true,
+            multiField: 'name',
+            noResult: 'Không tìm thấy kết quả',
+            dropdownBtn: true,
+            multiStyle: {
+                space: 5,
+                width: 200
+            }
+        });
+
+        $('#destination').magicsearch({
+            dataSource: dataSource,
+            fields: ['name'],
+            id: 'id',
+            format: '%name%',
+            multiple: false,
+            focusShow: true,
+            hidden: true,
+            multiField: 'name',
+            noResult: 'Không tìm thấy kết quả',
+            dropdownBtn: true,
+            multiStyle: {
+                space: 5,
+                width: 200
+            }
+        });
+    });
+
+
+    function warningBeforeCancel() {
+        swal({
+            title: "Xác nhận",
+            text: "Bạn có chắc muốn hủy bỏ thao tác này không?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-success",
+            cancelButtonClass: "btn-danger",
+            confirmButtonText: "Xác nhận",
+            cancelButtonText: "Hủy",
+        }).then((isConfirm) => {
+            if (isConfirm.dismiss) {
+            } else {
+                window.location.href = /*[[@{/admin/tour/list}]]*/'';
+            }
+        })
+    }
+
+    /*]]>*/
+</script>
+</body>
+</html>

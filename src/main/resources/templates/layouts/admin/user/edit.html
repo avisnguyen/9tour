@@ -1,0 +1,215 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-admin :: admin_head}"></head>
+<body class="no-skin">
+<div th:replace="~{fragments/fragments-admin :: admin_header}"></div>
+<div class="main-container ace-save-state" id="main-container">
+    <script type="text/javascript">
+        try {
+            ace.settings.loadState('main-container')
+        } catch (e) {
+        }
+    </script>
+    <div th:replace="~{fragments/fragments-admin :: admin_menu}"></div>
+
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="ace-icon fa fa-home home-icon"></i>
+                        <a th:href="@{/admin}">Trang chủ</a>
+                    </li>
+
+                    <li>
+                        <a th:href="@{/admin/user/list}">Người dùng</a>
+                    </li>
+                    <li th:if="${userModel.id}" class="active">Cập nhật thông tin</li>
+                    <li th:unless="${userModel.id}" class="active">Thêm mới</li>
+                </ul>
+            </div>
+            <div class="page-content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div th:if="${message}" th:class="|alert ${message.get('alert')}|">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <i class="ace-icon fa fa-times"></i>
+                            </button>
+                            <h4 class="text-center" th:text="${message.get('msg')}"></h4>
+                        </div>
+                        <form class="form-horizontal" method="post" role="form" id="formSubmit"
+                              th:object="${userModel}">
+                            <div class="form-group">
+                                <input type="hidden" th:field="*{id}">
+                                <label for="role" class="col-sm-3 control-label no-padding-right">Quyền(*)</label>
+                                <div class="col-sm-7">
+                                        <span th:each="role : ${roles.results}" id="role" class="options">
+                                            <th:block th:if="${roleCheckList.get(role.id)}">
+                                                <input type="checkbox" th:id="|role-${role.id}|" name="roles"
+                                                       th:value="${role.id}" checked>
+                                            </th:block>
+                                            <th:block th:unless="${roleCheckList.get(role.id)}">
+                                                <input type="checkbox" th:id="|role-${role.id}|" name="roles"
+                                                       th:value="${role.id}">
+                                            </th:block>
+                                            <label th:for="|role-${role.id}|">
+                                                 <th:block th:text="|${role.roleName}|"></th:block>
+                                            </label>
+                                            &nbsp&nbsp&nbsp;
+                                        </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"> First Name (*) </label>
+                                <div class="col-sm-7">
+                                    <input th:field="*{firstName}" class="form-control col-xs-12 col-sm-5"
+                                           required="required"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"> Last Name (*)</label>
+                                <div class="col-sm-7">
+                                    <input th:field="*{lastName}" class="form-control col-xs-12 col-sm-5"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"> Email (*)</label>
+                                <div class="col-sm-7">
+                                    <input th:field="*{email}" class="form-control col-xs-12 col-sm-5"
+                                           th:readonly="${userModel.id}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"> SĐT </label>
+                                <div class="col-sm-7">
+                                    <input th:field="*{phone}" class="form-control col-xs-12 col-sm-5"/>
+                                </div>
+                            </div>
+                            <th:block th:unless="${userModel.id}">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Mật khẩu (*)</label>
+                                    <div class="col-sm-7">
+                                        <input type="password" value="" name="password"
+                                               class="form-control col-xs-12 col-sm-5"/>
+                                    </div>
+                                </div>
+                            </th:block>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right">Giới tính (*)</label>
+                                <div class="col-sm-7">
+                                    <select th:field="*{sex}" class="form-control col-xs-12 col-sm-5">
+                                        <option disabled="true" value="" label="-- Giới tính --"/>
+                                        <option value="Nam" label="Nam"/>
+                                        <option value="Nữ" label="Nữ"/>
+                                        <option value="Khác" label="Khác"/>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right">Địa chỉ</label>
+                                <div class="col-sm-7">
+                                    <input th:field="*{address}" class="form-control col-xs-12 col-sm-5"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right">Quốc tịch</label>
+                                <div class="col-sm-7">
+                                    <input th:field="*{nationality}" class="form-control col-xs-12 col-sm-5"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right">Passport</label>
+                                <div class="col-sm-7">
+                                    <input th:field="*{passport}" class="form-control col-xs-12 col-sm-5"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right">Active</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" th:field="*{isEnable}"/>
+                                </div>
+                            </div>
+                            <input type="hidden" th:field="*{id}" id="userId"/>
+                            <div class="clearfix form-actions">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <th:block th:if="${userModel.id}">
+                                        <button class="btn btn-sm btn-success" type="submit" id="btn-update">
+                                            <i class="ace-icon fa fa-check bigger-110"></i>
+                                            Cập nhật thông tin
+                                        </button>
+                                        <button th:unless="${#request.getParameter('message')}"
+                                                class="btn btn-sm btn-danger" type="button" id="btn-cancel"
+                                                onclick="warningBeforeCancel()">
+                                            <i class="ace-icon fa fa-times red2 bigger-110"></i>
+                                            Hủy
+                                        </button>
+                                        <button th:if="${#request.getParameter('message')}"
+                                                class="btn btn-sm btn-default" type="button"
+                                                onclick="window.location.href='/9tour/admin/user/list'">
+                                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                                            Trở về
+                                        </button>
+                                    </th:block>
+                                    <th:block th:unless="${userModel.id}">
+                                        <button class="btn btn-sm btn-success" type="submit" id="btn-add">
+                                            <i class="ace-icon fa fa-check bigger-110"></i>
+                                            Thêm
+                                        </button>
+                                        <button class="btn btn-sm" type="button" id="btn-go-back"
+                                                onclick="warningBeforeCancel()">
+                                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                                            Trở về
+                                        </button>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/fragments-admin :: admin_footer}"></div>
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+</div>
+<th:block th:replace="~{fragments/fragments-admin :: admin_script}"></th:block>
+<script th:inline="javascript">
+    $(function () {
+        var requiredCheckboxes = $('.options :checkbox[required]');
+        requiredCheckboxes.change(function () {
+            if (requiredCheckboxes.is(':checked')) {
+                requiredCheckboxes.removeAttr('required');
+            } else {
+                requiredCheckboxes.attr('required', 'required');
+            }
+        });
+    });
+
+    /*<![CDATA[*/
+
+
+    function warningBeforeCancel() {
+        swal({
+            title: "Xác nhận",
+            text: "Bạn có chắc muốn hủy bỏ thao tác này không?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-success",
+            cancelButtonClass: "btn-danger",
+            confirmButtonText: "Xác nhận",
+            cancelButtonText: "Hủy",
+        }).then((isConfirm) => {
+            if (isConfirm.dismiss) {
+            } else {
+                window.location.href = /*[[@{/admin/user/list}]]*/'';
+            }
+        })
+    }
+
+    /*]]>*/
+</script>
+</body>
+</html>

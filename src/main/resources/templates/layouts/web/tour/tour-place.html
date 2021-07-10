@@ -1,0 +1,200 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments-web :: web_head}"></head>
+<body class="changeHeader">
+</div>
+<div class="modal fade modal-login modal-border-transparent" id="loginModal" tabindex="-1" role="dialog"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="btn btn-close close" data-dismiss="modal" aria-label="Close">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+            <div class="clear"></div>
+            <div id="modal-login-form-wrapper">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="wrap">
+    <header th:replace="~{fragments/fragments-web :: web_header}"></header>
+    <div class="main-wrapper">
+        <!-- PAGE TITLE -->
+        <section>
+            <div class="pageTitle page-image-tour-tag"
+                 th:style="'background-image: url(' + ${place.thumbnailUrl} + ')'">
+            </div>
+        </section>
+        <section>
+            <div class="container" style="position: relative">
+                <div class="background-description">
+                    <h1 class="tour-banner-title">[[${place.name}]]</h1>
+                    <div class="sticker">
+                        [[${place.description}]]
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="mark-close hidden-cls" id="markcloseWebTour"></section>
+        <section class="mainContentSection packagesSection list-tour-section" id="main-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-9 col-xs-8">
+                        <div class="filter-list-tour">
+                            <div class="filter-list-tour">
+                                <div class="filter-text">Sắp xếp :</div>
+                                <th:block th:if="${sortCode == 1}">
+                                    <div class="filter-tour">
+                                        <a class="filter-div active" href="#main-content">
+                                            [ Giá thấp nhất ]
+                                        </a>
+                                        <a class="filter-div"
+                                           th:href="@{'/tour/'+${placeId}+'?page=1&limit=6&sort=trips.departureTime'}">
+                                            [ Ngày gần nhất ]
+                                        </a>
+                                    </div>
+                                </th:block>
+                                <th:block th:if="${sortCode == 2}">
+                                    <div class="filter-tour">
+                                        <a class="filter-div"
+                                           th:href="@{'/tour/'+${placeId}+'?page=1&limit=6&sortBy=trips.adultPrice'}">
+                                            [ Giá thấp nhất ]
+                                        </a>
+                                        <a class="filter-div active" href="#main-content">
+                                            [ Ngày gần nhất ]
+                                        </a>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <th:block th:each="tour, state : ${tours.results}" th:if="${state.count < 7}">
+                        <div class="row box-search-tour">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="box-search-tour-image">
+                                    <a th:href="@{/tour/{id}/{slug}(id = ${tour.id}, slug = ${tour.slug})}"
+                                       class="isotopeSelector image-box-relative image-box-3x2">
+                                        <img th:onError="|this.onerror=null;this.src='@{/web/img/no-img.png}';|"
+                                             class="tour-image"
+                                             th:src="${tour.thumbnailUrl}"
+                                             alt="Image">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <div class="row box-search-tour-info">
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <div class="title-tour">
+                                            <a th:href="@{/tour/{id}/{slug}(id = ${tour.id}, slug = ${tour.slug})}"
+                                               class="GAproductClick" th:title="${tour.name}">
+                                                [[${tour.name}]]
+                                            </a>
+                                        </div>
+                                        <div class="destination-tour">
+                                            <th:block th:text="${tour.departureModel.name + ' - '}">
+                                            </th:block>
+                                            <th:block th:each="place, iState: ${tour.placeResponseModels}">
+                                                [[${place.name}]]
+                                                <span th:if="${!iState.last}"> | </span>
+                                            </th:block>
+                                        </div>
+                                        <div class="detail-tour">
+                                            <th:block th:text="${'Thời gian: ' + tour.duringTime}"></th:block>
+                                            <br/>
+                                            <th:block th:text="${'Phương tiện: ' + tour.transport}"></th:block>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <div class="row">
+                                            <th:block th:if="${tour.tripResponseModel == null}">
+                                                <div class="row-box-price col-md-12 col-sm-12 col-xs-6">
+                                                    <a th:href="@{/tour/{id}/{slug}(id = ${tour.id}, slug = ${tour.slug})}"
+                                                       class="GAproductClick box-price-tour"
+                                                       th:title="${tour.name}">
+                                                        <span class="text">Chi tiết</span>
+                                                    </a>
+                                                </div>
+                                            </th:block>
+                                            <th:block th:unless="${tour.tripResponseModel == null}">
+                                                <div class="row-box-price col-md-12 col-sm-12 col-xs-6">
+                                                    <a th:href="@{/tour/{id}/{slug}(id = ${tour.id}, slug = ${tour.slug})}"
+                                                       class="GAproductClick box-price-tour"
+                                                       th:title="${tour.name}">
+                                                        <span class="text">Giá từ  </span>
+                                                        <span class="price"
+                                                              th:text="${#numbers.formatInteger(tour.tripResponseModel.adultPrice,3,'POINT')}"></span>
+                                                    </a>
+                                                </div>
+                                                <div class="row-box-views  col-md-12 col-sm-12 col-xs-6"
+                                                     style="display: block">
+                                                    <div>
+                                                        <ul class="list-inline detailsBtn"
+                                                            style="display:block;float: none;">
+                                                            <li>
+                                                    <span class="textInfo">
+                                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                        <th:block
+                                                                th:text="${#dates.format(tour.tripResponseModel.departureTime, 'dd/MM/yyyy')}"></th:block>
+                                                    </span>
+                                                            </li>
+                                                            <li>
+                                                    <span class="textInfo">
+                                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                        <th:block
+                                                                th:text="${#dates.format(tour.tripResponseModel.returnTime, 'dd/MM/yyyy')}"></th:block>
+                                                    </span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="paginationCenter">
+                                <ul class="pagination" id="pagination"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form th:action="@{'/tour/' + ${placeId}}" id="pagingForm" method="get">
+                <input type="hidden" th:value="${tours.getPage()}" id="page" name="page">
+                <input type="hidden" th:value="${tours.getLimit()}" id="limit" name="limit">
+                <th:block th:if="${tours.getSortBy()}">
+                    <input type="hidden" th:value="${tours.getSortBy()}" id="sortBy" name="sortBy">
+                </th:block>
+            </form>
+        </section>
+    </div>
+    <footer th:replace="~{fragments/fragments-web :: web_footer}"></footer>
+</div>
+<script>
+    var currentPage = [[${tours.page}]];
+    var limit = [[${tours.limit}]];
+    var totalPage = [[${tours.totalPages}]];
+    $(function () {
+        window.pagObj = $('#pagination').twbsPagination({
+            totalPages: totalPage,
+            visiblePages: 5,
+            startPage: currentPage,
+            onPageClick: function (event, page) {
+                if (currentPage != page) {
+                    $('#limit').val(limit);
+                    $('#page').val(page);
+                    $('#pagingForm').submit();
+                }
+            }
+        })
+    });
+</script>
+<script th:replace="~{fragments/fragments-web :: web_script}"></script>
+</body>
+</html>
