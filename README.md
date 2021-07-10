@@ -28,6 +28,12 @@ mvnw spring-boot:run
 - Member account:
   - Username: user@9tour.xyz
   - Password: 123456@
+- Payment Account
+  - Bank: NCB
+  - Number: 9704198526191432198
+  - Name: NGUYEN VAN A
+  - Date: 07/15
+  - OTP: 123456
 
 ### Built with
 
